@@ -1,91 +1,189 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Berenice AI</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Berenice AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: radial-gradient(circle at top, #111827, #030712);
-      color: #ffffff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      text-align: center;
-    }
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
 
-    .container {
-      max-width: 800px;
-      padding: 40px;
-    }
+body {
+  background: radial-gradient(circle at top, #0b1120, #020617);
+  color: white;
+  font-family: 'Inter', sans-serif;
+}
 
-    h1 {
-      font-size: 64px;
-      font-weight: 600;
-      margin-bottom: 10px;
-      letter-spacing: -1px;
-    }
+/* NAVBAR */
+nav {
+  position: fixed;
+  width: 100%;
+  padding: 20px 10%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(2,6,23,0.8);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+}
 
-    .tagline {
-      font-size: 22px;
-      font-weight: 300;
-      opacity: 0.85;
-      margin-bottom: 30px;
-    }
+nav .logo-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+}
 
-    .description {
-      font-size: 18px;
-      opacity: 0.7;
-      line-height: 1.6;
-      margin-bottom: 40px;
-    }
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+}
 
-    .button {
-      display: inline-block;
-      padding: 14px 28px;
-      border-radius: 8px;
-      background: #2563eb;
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      transition: 0.3s ease;
-    }
+nav ul li a {
+  text-decoration: none;
+  color: white;
+  opacity: 0.8;
+  transition: 0.3s;
+}
 
-    .button:hover {
-      background: #1d4ed8;
-    }
+nav ul li a:hover {
+  opacity: 1;
+}
 
-    .footer {
-      margin-top: 50px;
-      font-size: 14px;
-      opacity: 0.5;
-    }
-  </style>
+/* SECTIONS */
+section {
+  padding: 120px 10%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 64px;
+  letter-spacing: 3px;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa, #93c5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 25px rgba(59,130,246,0.4);
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+
+p {
+  max-width: 700px;
+  opacity: 0.8;
+  font-size: 18px;
+}
+
+/* HERO ANIMACIÓN */
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 1.2s ease forwards;
+}
+
+.fade-up.delay {
+  animation-delay: 0.3s;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.logo {
+  width: 140px;
+  margin-bottom: 30px;
+}
+
+footer {
+  text-align: center;
+  padding: 40px;
+  opacity: 0.5;
+  border-top: 1px solid #1e293b;
+}
+</style>
 </head>
+
 <body>
-  <div class="container">
-    <h1>Berenice AI</h1>
-    <div class="tagline">
-      Advanced Optimization Infrastructure
-    </div>
-    <div class="description">
-      Proprietary high-performance architecture for solving large-scale 
-      combinatorial optimization challenges.
-      <br><br>
-      Technology currently under confidential development.
-    </div>
-    <a href="mailto:contact@bereniceai.com" class="button">
-      Contact
-    </a>
-    <div class="footer">
-      © 2026 Berenice AI
-    </div>
-  </div>
+
+<nav>
+  <div class="logo-text">BERENICE AI</div>
+  <ul>
+    <li><a href="#quienes">Quiénes Somos</a></li>
+    <li><a href="#proyectos">Proyectos</a></li>
+    <li><a href="#ecosistema">Ecosistema</a></li>
+    <li><a href="#tecnologia">Tecnología</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+</nav>
+
+<section id="inicio">
+  <img src="logo.png" class="logo fade-up">
+  <h1 class="fade-up delay">BERENICE AI</h1>
+  <p class="fade-up delay">
+    Infraestructura avanzada para optimización computacional a gran escala.
+  </p>
+</section>
+
+<section id="quienes">
+  <h2>Quiénes Somos</h2>
+  <p>
+    Berenice AI es una iniciativa enfocada en el desarrollo de arquitecturas 
+    computacionales propietarias para resolver problemas combinatorios complejos.
+  </p>
+</section>
+
+<section id="proyectos">
+  <h2>Proyectos</h2>
+  <p>
+    Desarrollo de sistemas de optimización de alto rendimiento aplicables 
+    a logística, redes, telecomunicaciones y planificación dinámica.
+  </p>
+</section>
+
+<section id="ecosistema">
+  <h2>Ecosistema Berenice</h2>
+  <p>
+    Construimos un entorno tecnológico que integra investigación,
+    arquitectura computacional y aplicaciones industriales.
+  </p>
+</section>
+
+<section id="tecnologia">
+  <h2>Tecnología</h2>
+  <p>
+    Infraestructura avanzada diseñada para escalar más allá de los
+    límites tradicionales de optimización.
+  </p>
+</section>
+
+<section id="contacto">
+  <h2>Contacto</h2>
+  <p>
+    Consultas e inversión:<br><br>
+    contact@bereniceai.com
+  </p>
+</section>
+
+<footer>
+  © 2026 Berenice AI — All rights reserved.
+</footer>
+
 </body>
 </html>
