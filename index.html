@@ -32,7 +32,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:cen
 .corner::before,.corner::after{content:'';position:absolute;background:rgba(0,200,255,0.3);}
 .corner::before{width:2px;height:100%;}.corner::after{width:100%;height:2px;}
 .c-tl{top:22px;left:22px;}.c-tr{top:22px;right:22px;transform:scaleX(-1);}.c-bl{bottom:22px;left:22px;transform:scaleY(-1);}.c-br{bottom:22px;right:22px;transform:scale(-1);}
-/* radar replaced by canvas */
+.radar{position:absolute;top:50%;left:65%;transform:translate(-50%,-50%);width:460px;height:460px;pointer-events:none;}
+.radar-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(0,200,255,0.06);animation:pulse-r 4s ease-in-out infinite;}
+.radar-ring:nth-child(2){inset:22%;animation-delay:.7s;}.radar-ring:nth-child(3){inset:44%;border-color:rgba(0,200,255,0.1);animation-delay:1.4s;}
+@keyframes pulse-r{0%,100%{opacity:.4;}50%{opacity:1;}}
+.radar-sweep{position:absolute;inset:0;animation:sweep 12s linear infinite;}
+.radar-sweep::after{content:'';position:absolute;top:50%;left:50%;width:230px;height:1px;transform-origin:0 0;background:linear-gradient(90deg,rgba(0,200,255,0.4),transparent);}
+@keyframes sweep{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 .hero-content{max-width:640px;position:relative;z-index:2;}
 .hero-tag{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.16em;color:var(--cyan2);margin-bottom:1.2rem;display:flex;align-items:center;gap:0.8rem;}
 .hero-tag::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:blink 2s infinite;flex-shrink:0;}
@@ -219,7 +225,7 @@ canvas { display: block; }
 <section id="hero">
   <div class="corner c-tl"></div><div class="corner c-tr"></div>
   <div class="corner c-bl"></div><div class="corner c-br"></div>
-  <canvas id="radar-canvas" style="position:absolute;top:50%;left:65%;transform:translate(-50%,-50%);width:460px;height:460px;pointer-events:none;"></canvas>
+  <div class="radar"><div class="radar-ring"></div><div class="radar-ring"></div><div class="radar-ring"></div><div class="radar-sweep"></div></div>
   <div class="hero-content">
     <div class="hero-tag">SYS:BERENICE_AI &nbsp;// &nbsp;STATUS: ONLINE &nbsp;// &nbsp;v3.1.2</div>
     <h1 class="hero-title">
@@ -363,7 +369,29 @@ canvas { display: block; }
       <div class="reveal">
         <div class="terminal">
           <div class="t-bar"><span class="t-dot td1"></span><span class="t-dot td2"></span><span class="t-dot td3"></span><span class="t-title">berenice_ai — monitor.sh</span></div>
-          <div class="t-body" id="main-terminal" style="min-height:420px;"></div>
+          <div class="t-body">
+            <div><span class="tg">$</span> <span class="tc">berenice</span> status --live</div>
+            <div class="tdm">Connecting to edge nodes...</div>
+            <div><span class="tg">✓</span> Cluster: <span class="tc">ONLINE [12/12]</span></div>
+            <div><span class="tg">✓</span> Sensor feeds: <span class="tc">2.400 active</span></div>
+            <div><span class="tg">✓</span> Inference: <span class="tc">47 models running</span></div>
+            <div>&nbsp;</div>
+            <div><span class="tg">$</span> <span class="tc">berenice</span> alerts --high</div>
+            <div class="tdm">Scanning anomaly log...</div>
+            <div><span class="ty">⚠</span> PUMP_07: vibration +18% <span class="ty">[WATCH]</span></div>
+            <div><span class="tr">✗</span> COMP_03: temp critical <span class="tr">[ACTION]</span></div>
+            <div>&nbsp;</div>
+            <div><span class="tg">$</span> <span class="tc">berenice</span> predict --unit COMP_03</div>
+            <div class="tdm">Running thermal degradation model...</div>
+            <div>Failure window: <span class="tr">18h ± 2h</span> · <span class="tc">MAINTENANCE SCHEDULED</span></div>
+            <div>&nbsp;</div>
+            <div><span class="tg">$</span> <span class="tc">berenice</span> repair --unit COMP_03 --auto</div>
+            <div class="tdm">Initiating maintenance protocol...</div>
+            <div><span class="tg">✓</span> Backup unit COMP_04: <span class="tc">ACTIVATED</span></div>
+            <div><span class="tg">✓</span> Downtime cost avoided: <span class="tg">$48.200 USD</span></div>
+            <div>&nbsp;</div>
+            <div class="tdm">_<span class="cb">█</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -421,362 +449,6 @@ canvas { display: block; }
   </div>
 </footer>
 
-
-<script>
-(function() {
-  function init() {
-    // ── TERMINAL ──
-    (function(){
-  const terminal = document.getElementById('main-terminal');
-  if(!terminal) return;
-
-  const SEQUENCES = [
-    { type:'cmd',   plain:'berenice status --live',                  after: 180 },
-    { type:'dim',   plain:'Connecting to edge nodes...',             after: 520 },
-    { type:'ok',    plain:'Cluster: ONLINE [12/12]',                 after: 180 },
-    { type:'ok',    plain:'Sensor feeds: 2.400 active',              after: 180 },
-    { type:'ok',    plain:'Inference: 47 models running',            after: 900 },
-    { type:'blank',                                                  after: 300 },
-    { type:'cmd',   plain:'berenice alerts --high',                  after: 180 },
-    { type:'dim',   plain:'Scanning anomaly log...',                 after: 680 },
-    { type:'warn',  plain:'PUMP_07: vibration +18%  [WATCH]',        after: 280 },
-    { type:'err',   plain:'COMP_03: temp critical   [ACTION]',       after: 900 },
-    { type:'blank',                                                  after: 300 },
-    { type:'cmd',   plain:'berenice predict --unit COMP_03',         after: 180 },
-    { type:'dim',   plain:'Running thermal degradation model...',    after: 820 },
-    { type:'plain', plain:'Failure window: 18h ± 2h',                after: 280 },
-    { type:'ok',    plain:'Action: MAINTENANCE SCHEDULED',           after: 1100 },
-    { type:'blank',                                                  after: 300 },
-    { type:'cmd',   plain:'berenice repair --unit COMP_03 --auto',   after: 180 },
-    { type:'dim',   plain:'Initiating maintenance protocol...',      after: 620 },
-    { type:'ok',    plain:'Shutdown sequence: OK',                   after: 240 },
-    { type:'ok',    plain:'Backup unit COMP_04: ACTIVATED',          after: 240 },
-    { type:'ok',    plain:'Spare part order: DISPATCHED [ETA 6h]',   after: 240 },
-    { type:'ok',    plain:'Downtime cost avoided: $48.200 USD',      after: 1100 },
-    { type:'blank',                                                  after: 300 },
-    { type:'cmd',   plain:'berenice optimize --line L3 --target throughput', after: 180 },
-    { type:'dim',   plain:'Analyzing 847 process variables...',      after: 740 },
-    { type:'warn',  plain:'Bottleneck: STATION_09',                  after: 280 },
-    { type:'plain', plain:'Cycle time adjusted: -12.3%',             after: 240 },
-    { type:'ok',    plain:'Throughput gain: +19.4 units/hr',         after: 1100 },
-    { type:'blank',                                                  after: 300 },
-    { type:'cmd',   plain:'berenice energy --plant ARG_01 --optimize', after: 180 },
-    { type:'dim',   plain:'Loading demand forecast model...',        after: 680 },
-    { type:'ok',    plain:'Peak demand predicted: 14:30-17:00',      after: 240 },
-    { type:'ok',    plain:'Load shifted: 3 units -> off-peak',       after: 240 },
-    { type:'ok',    plain:'Energy savings today: $7.840 USD',        after: 1100 },
-    { type:'blank',                                                  after: 300 },
-  ];
-
-  const SPEED = { cmd: 38, dim: 14, ok: 12, warn: 12, err: 12, plain: 13, blank: 0 };
-  const MAX_LINES = 13;
-  let visibleLines = [];
-  let cursor = null;
-
-  function placeCursor(lineEl) {
-    removeCursor();
-    cursor = document.createElement('span');
-    cursor.className = 'cb';
-    cursor.textContent = '█';
-    lineEl.appendChild(cursor);
-  }
-  function removeCursor() {
-    if(cursor && cursor.parentNode) cursor.parentNode.removeChild(cursor);
-    cursor = null;
-  }
-
-  function addLine(cls) {
-    const el = document.createElement('div');
-    if(cls) el.className = cls;
-    terminal.appendChild(el);
-    visibleLines.push(el);
-    while(visibleLines.length > MAX_LINES) {
-      const old = visibleLines.shift();
-      old.style.transition = 'opacity 0.35s';
-      old.style.opacity = '0';
-      setTimeout(()=>{ if(old.parentNode) old.parentNode.removeChild(old); }, 360);
-    }
-    return el;
-  }
-
-  function typeLine(lineData, onDone) {
-    if(lineData.type === 'blank') {
-      addLine('');
-      setTimeout(onDone, lineData.after || 300);
-      return;
-    }
-
-    const el = addLine(lineData.type === 'dim' ? 'tdm' : '');
-    const plain = lineData.plain;
-    const speed = SPEED[lineData.type] || 15;
-    let i = 0;
-
-    let prefix = '';
-    if(lineData.type === 'cmd')  prefix = '<span class="tg">$</span> <span class="tc">';
-    if(lineData.type === 'ok')   prefix = '<span class="tg">&#10003;</span> ';
-    if(lineData.type === 'warn') prefix = '<span class="ty">&#9888;</span> ';
-    if(lineData.type === 'err')  prefix = '<span class="tr">&#10007;</span> ';
-
-    const isCmd = lineData.type === 'cmd';
-    el.innerHTML = prefix;
-    placeCursor(el);
-
-    function typeChar() {
-      if(i < plain.length) {
-        removeCursor();
-        if(isCmd) {
-          el.innerHTML = '<span class="tg">$</span> <span class="tc">' + plain.slice(0, i+1) + '</span>';
-        } else {
-          el.innerHTML = prefix + plain.slice(0, i+1);
-        }
-        placeCursor(el);
-        i++;
-        setTimeout(typeChar, speed + (Math.random() * speed * 0.4 | 0));
-      } else {
-        removeCursor();
-        if(isCmd) {
-          el.innerHTML = '<span class="tg">$</span> <span class="tc">' + plain + '</span>';
-        } else {
-          el.innerHTML = prefix + plain;
-        }
-        setTimeout(onDone, lineData.after || 200);
-      }
-    }
-    typeChar();
-  }
-
-  let idx = 0;
-  function next() {
-    if(idx >= SEQUENCES.length) idx = 0;
-    typeLine(SEQUENCES[idx++], next);
-  }
-
-  setTimeout(next, 500);
-})();
-
-    // ── RADAR ──
-    (function(){
-  const canvas = document.getElementById('radar-canvas');
-  if(!canvas) return;
-  const SIZE = 460;
-  canvas.width  = SIZE;
-  canvas.height = SIZE;
-  const ctx = canvas.getContext('2d');
-  const cx = SIZE / 2, cy = SIZE / 2, R = SIZE / 2 - 4;
-
-  // ── Puntos objetivo fijos (coordenadas relativas al centro) ──
-  const TARGETS = [
-    { rx:  0.52, ry: -0.18 },
-    { rx: -0.38, ry:  0.41 },
-    { rx:  0.21, ry:  0.60 },
-    { rx: -0.61, ry: -0.22 },
-    { rx:  0.70, ry:  0.35 },
-    { rx: -0.15, ry: -0.55 },
-    { rx:  0.44, ry: -0.58 },
-    { rx: -0.55, ry:  0.52 },
-    { rx:  0.08, ry:  0.30 },
-    { rx: -0.28, ry: -0.72 },
-    { rx:  0.78, ry: -0.10 },
-    { rx: -0.72, ry:  0.20 },
-  ].map(t => ({
-    x: cx + t.rx * R,
-    y: cy + t.ry * R,
-    glow: 0   // 0 = apagado, 1 = máximo brillo
-  }));
-
-  // Solo incluir los que quedan dentro del círculo
-  const targets = TARGETS.filter(t => {
-    const dx = t.x - cx, dy = t.y - cy;
-    return Math.sqrt(dx*dx + dy*dy) < R * 0.92;
-  });
-
-  let sweepAngle = -Math.PI / 2;  // empieza arriba
-  const SWEEP_SPEED = (2 * Math.PI) / (10 * 60); // una vuelta cada 10s a 60fps
-
-  function angleDiff(a, b) {
-    // diferencia angular signed de b a a (cuánto giró desde b hasta a)
-    let d = ((a - b) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-    return d;
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, SIZE, SIZE);
-
-    // ── Clip circular ──
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(cx, cy, R, 0, Math.PI * 2);
-    ctx.clip();
-
-    // ── Fondo oscuro del radar ──
-    ctx.fillStyle = 'rgba(1, 8, 18, 0.82)';
-    ctx.fillRect(0, 0, SIZE, SIZE);
-
-    // ── Grid cuadriculado sutil ──
-    const GRID = 46;  // tamaño de celda
-    ctx.strokeStyle = 'rgba(0, 200, 255, 0.055)';
-    ctx.lineWidth = 0.8;
-    for(let x = cx % GRID; x < SIZE; x += GRID) {
-      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, SIZE); ctx.stroke();
-    }
-    for(let y = cy % GRID; y < SIZE; y += GRID) {
-      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(SIZE, y); ctx.stroke();
-    }
-
-    // ── Líneas cruzadas centrales ──
-    ctx.strokeStyle = 'rgba(0, 200, 255, 0.08)';
-    ctx.lineWidth = 0.8;
-    ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, SIZE); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(SIZE, cy); ctx.stroke();
-    // diagonales
-    ctx.strokeStyle = 'rgba(0, 200, 255, 0.04)';
-    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(SIZE, SIZE); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(SIZE, 0); ctx.lineTo(0, SIZE); ctx.stroke();
-
-    // ── Anillos concéntricos ──
-    [0.25, 0.5, 0.75, 1.0].forEach((f, i) => {
-      ctx.beginPath();
-      ctx.arc(cx, cy, R * f, 0, Math.PI * 2);
-      ctx.strokeStyle = i === 3
-        ? 'rgba(0, 200, 255, 0.18)'
-        : 'rgba(0, 200, 255, 0.07)';
-      ctx.lineWidth = i === 3 ? 1.2 : 0.8;
-      ctx.stroke();
-    });
-
-    // ── Marcas de ángulo (cada 30°) ──
-    ctx.strokeStyle = 'rgba(0, 200, 255, 0.1)';
-    ctx.lineWidth = 0.7;
-    for(let a = 0; a < 360; a += 30) {
-      const rad = (a * Math.PI) / 180;
-      ctx.beginPath();
-      ctx.moveTo(cx + Math.cos(rad) * R * 0.96, cy + Math.sin(rad) * R * 0.96);
-      ctx.lineTo(cx + Math.cos(rad) * R,        cy + Math.sin(rad) * R);
-      ctx.stroke();
-    }
-
-    // ── Trail verde del sweep (cola que se desvanece) ──
-    const TRAIL_ARC = Math.PI * 0.55;  // cuántos radianes dura la cola
-    const trailGrad = ctx.createConicalGradient
-      ? null  // no disponible en todos los browsers
-      : null;
-
-    // Dibujar la cola como sectores con alpha decreciente
-    const STEPS = 40;
-    for(let s = 0; s < STEPS; s++) {
-      const startA = sweepAngle - TRAIL_ARC * ((s + 1) / STEPS);
-      const endA   = sweepAngle - TRAIL_ARC * (s / STEPS);
-      const alpha  = (1 - s / STEPS) * 0.18;
-      ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.arc(cx, cy, R, startA, endA);
-      ctx.closePath();
-      ctx.fillStyle = `rgba(0, 220, 120, ${alpha})`;
-      ctx.fill();
-    }
-
-    // ── Línea de barrida ──
-    const grad = ctx.createLinearGradient(
-      cx, cy,
-      cx + Math.cos(sweepAngle) * R,
-      cy + Math.sin(sweepAngle) * R
-    );
-    grad.addColorStop(0,   'rgba(0, 255, 160, 0.0)');
-    grad.addColorStop(0.3, 'rgba(0, 255, 160, 0.25)');
-    grad.addColorStop(1,   'rgba(0, 255, 160, 0.85)');
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.lineTo(cx + Math.cos(sweepAngle) * R, cy + Math.sin(sweepAngle) * R);
-    ctx.strokeStyle = grad;
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-
-    // ── Puntos objetivo ──
-    targets.forEach(t => {
-      if(t.glow <= 0) return;
-
-      const g = t.glow;
-
-      // Glow exterior
-      const glowR = ctx.createRadialGradient(t.x, t.y, 0, t.x, t.y, 12 * g);
-      glowR.addColorStop(0,   `rgba(0, 255, 160, ${0.5 * g})`);
-      glowR.addColorStop(0.4, `rgba(0, 200, 100, ${0.2 * g})`);
-      glowR.addColorStop(1,   'rgba(0,0,0,0)');
-      ctx.beginPath();
-      ctx.arc(t.x, t.y, 12 * g, 0, Math.PI * 2);
-      ctx.fillStyle = glowR;
-      ctx.fill();
-
-      // Punto central
-      ctx.beginPath();
-      ctx.arc(t.x, t.y, 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(120, 255, 200, ${0.6 + 0.4 * g})`;
-      ctx.fill();
-
-      // Cruz de target
-      const cs = 5 * g;
-      ctx.strokeStyle = `rgba(0, 255, 160, ${0.7 * g})`;
-      ctx.lineWidth = 0.8;
-      ctx.beginPath();
-      ctx.moveTo(t.x - cs, t.y); ctx.lineTo(t.x + cs, t.y);
-      ctx.moveTo(t.x, t.y - cs); ctx.lineTo(t.x, t.y + cs);
-      ctx.stroke();
-    });
-
-    ctx.restore(); // fin clip
-
-    // ── Borde exterior del radar ──
-    ctx.beginPath();
-    ctx.arc(cx, cy, R, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(0, 200, 255, 0.22)';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-
-    // ── Centro dot ──
-    ctx.beginPath();
-    ctx.arc(cx, cy, 3, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(0, 200, 255, 0.6)';
-    ctx.fill();
-  }
-
-  function update() {
-    sweepAngle += SWEEP_SPEED;
-    if(sweepAngle > Math.PI) sweepAngle -= Math.PI * 2;
-
-    // Actualizar glow de targets
-    targets.forEach(t => {
-      const dx = t.x - cx, dy = t.y - cy;
-      const tAngle = Math.atan2(dy, dx);
-
-      // Diferencia entre la línea de barrida y el target
-      const diff = angleDiff(sweepAngle, tAngle);
-
-      if(diff < 0.08) {
-        // La barrida acaba de pasar por encima — encender
-        t.glow = 1.0;
-      } else {
-        // Desvanecimiento gradual
-        t.glow = Math.max(0, t.glow - 0.004);
-      }
-    });
-  }
-
-  function loop() {
-    update();
-    draw();
-    requestAnimationFrame(loop);
-  }
-  loop();
-})();
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-})();
-</script>
 
 </body>
 </html>
