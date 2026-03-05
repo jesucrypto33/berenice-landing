@@ -423,6 +423,7 @@ canvas { display: block; }
 
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
 (function(){
   const terminal = document.getElementById('main-terminal');
   if(!terminal) return;
@@ -550,9 +551,11 @@ canvas { display: block; }
 
   setTimeout(next, 500);
 })();
+}); // DOMContentLoaded terminal
 </script>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
 (function(){
   const canvas = document.getElementById('radar-canvas');
   if(!canvas) return;
@@ -766,6 +769,7 @@ canvas { display: block; }
   }
   loop();
 })();
+}); // DOMContentLoaded radar
 </script>
 
 </body>
