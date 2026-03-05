@@ -189,6 +189,12 @@ footer{background:var(--black);border-top:1px solid rgba(0,200,255,.08);padding:
   opacity: 1 !important;
 }
 
+
+canvas { display: block; }
+#logo3d { width: 320px !important; height: 320px !important; }
+#logo-nav { width: 40px !important; height: 40px !important; }
+#logo-footer { width: 32px !important; height: 32px !important; }
+
 </style>
 </head>
 <body>
@@ -563,8 +569,15 @@ footer{background:var(--black);border-top:1px solid rgba(0,200,255,.08);padding:
     drawLogo(document.getElementById('logo-nav'),40);
     drawLogo(document.getElementById('logo-footer'),32);
   }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
-  else init();
+  // Try immediately
+  try { init(); } catch(e){}
+  // Try on DOMContentLoaded
+  document.addEventListener('DOMContentLoaded', function(){ try{ init(); }catch(e){} });
+  // Try on load (final fallback)
+  window.addEventListener('load', function(){ try{ init(); }catch(e){} });
+  // Also retry after short delays in case canvas not ready
+  setTimeout(function(){ try{ init(); }catch(e){} }, 100);
+  setTimeout(function(){ try{ init(); }catch(e){} }, 500);
 })();
 </script>
 
