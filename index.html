@@ -1,189 +1,579 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Berenice AI</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Berenice AI — Motor de Optimización Industrial</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  scroll-behavior: smooth;
+:root{--black:#020408;--deep:#040d1a;--navy:#071428;--blue1:#0a1f3d;--cyan:#00c8ff;--cyan2:#0080bb;--red:#cc2200;--green:#00c87a;--white:#e8f4ff;--gray:#4a6a8a;--display:'Orbitron',sans-serif;--body:'Rajdhani',sans-serif;--mono:'Share Tech Mono',monospace;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--body);background:var(--black);color:var(--white);overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,200,255,0.022) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,255,0.022) 1px,transparent 1px);background-size:60px 60px;}
+nav{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:0 3rem;height:68px;background:rgba(2,4,8,0.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,200,255,0.1);}
+.nav-brand{display:flex;align-items:center;gap:0.7rem;}
+.nav-brand canvas{display:block;flex-shrink:0;}
+.nav-brand-text{font-family:var(--display);font-weight:900;font-size:1rem;letter-spacing:0.1em;}
+.nav-brand-text span{color:var(--cyan);}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{font-family:var(--display);font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gray);transition:color 0.2s;}
+.nav-links a:hover{color:var(--cyan);}
+.nav-cta{font-family:var(--display);font-weight:700;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.5rem 1.3rem;color:var(--cyan);border:1px solid rgba(0,200,255,0.45);background:transparent;cursor:pointer;transition:background 0.2s,box-shadow 0.2s;}
+.nav-cta:hover{background:rgba(0,200,255,0.07);box-shadow:0 0 14px rgba(0,200,255,0.18);}
+#hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:100px 3rem 80px;background:radial-gradient(ellipse 75% 65% at 55% 50%,rgba(13,45,87,0.5) 0%,var(--black) 72%);overflow:hidden;}
+.corner{position:absolute;width:55px;height:55px;}
+.corner::before,.corner::after{content:'';position:absolute;background:rgba(0,200,255,0.3);}
+.corner::before{width:2px;height:100%;}.corner::after{width:100%;height:2px;}
+.c-tl{top:22px;left:22px;}.c-tr{top:22px;right:22px;transform:scaleX(-1);}.c-bl{bottom:22px;left:22px;transform:scaleY(-1);}.c-br{bottom:22px;right:22px;transform:scale(-1);}
+.radar{position:absolute;top:50%;left:65%;transform:translate(-50%,-50%);width:460px;height:460px;pointer-events:none;}
+.radar-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(0,200,255,0.06);animation:pulse-r 4s ease-in-out infinite;}
+.radar-ring:nth-child(2){inset:22%;animation-delay:.7s;}.radar-ring:nth-child(3){inset:44%;border-color:rgba(0,200,255,0.1);animation-delay:1.4s;}
+@keyframes pulse-r{0%,100%{opacity:.4;}50%{opacity:1;}}
+.radar-sweep{position:absolute;inset:0;animation:sweep 12s linear infinite;}
+.radar-sweep::after{content:'';position:absolute;top:50%;left:50%;width:230px;height:1px;transform-origin:0 0;background:linear-gradient(90deg,rgba(0,200,255,0.4),transparent);}
+@keyframes sweep{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.hero-content{max-width:640px;position:relative;z-index:2;}
+.hero-tag{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.16em;color:var(--cyan2);margin-bottom:1.2rem;display:flex;align-items:center;gap:0.8rem;}
+.hero-tag::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:blink 2s infinite;flex-shrink:0;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.15;}}
+.hero-title{font-family:var(--display);font-weight:900;font-size:clamp(2.4rem,5vw,4.8rem);line-height:1.1;letter-spacing:0.03em;text-transform:uppercase;margin-bottom:1.5rem;}
+.hero-title .l1{color:var(--white);}.hero-title .l2{color:transparent;-webkit-text-stroke:1px rgba(0,200,255,0.7);}.hero-title .l3{color:var(--cyan);text-shadow:0 0 22px rgba(0,200,255,0.35);}
+.hero-sub{font-size:1rem;font-weight:500;color:rgba(200,225,255,0.5);max-width:480px;line-height:1.8;margin-bottom:2.5rem;padding-left:1rem;border-left:2px solid rgba(0,200,255,0.35);}
+.hero-sub strong{color:var(--white);}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;}
+.btn-primary{font-family:var(--display);font-weight:700;font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;padding:0.85rem 2rem;background:var(--cyan);color:var(--black);border:none;cursor:pointer;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));transition:box-shadow 0.2s,transform 0.15s;}
+.btn-primary:hover{box-shadow:0 0 22px rgba(0,200,255,0.5);transform:translateY(-2px);}
+.btn-outline{font-family:var(--display);font-weight:600;font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;padding:0.85rem 2rem;background:transparent;color:var(--cyan);border:1px solid rgba(0,200,255,0.35);cursor:pointer;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));transition:border-color 0.2s,box-shadow 0.2s,transform 0.15s;}
+.btn-outline:hover{border-color:var(--cyan);box-shadow:0 0 14px rgba(0,200,255,0.18);transform:translateY(-2px);}
+.hero-stats{position:absolute;right:3rem;top:50%;transform:translateY(-50%);z-index:2;display:flex;flex-direction:column;gap:2px;}
+.stat-card{background:rgba(4,13,26,0.88);border:1px solid rgba(0,200,255,0.1);border-left:2px solid var(--cyan);padding:1.1rem 1.6rem;min-width:175px;backdrop-filter:blur(8px);}
+.stat-num{font-family:var(--display);font-weight:900;font-size:1.9rem;color:var(--cyan);text-shadow:0 0 12px var(--cyan);line-height:1;}
+.stat-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray);margin-top:.3rem;}
+#ticker{overflow:hidden;background:var(--deep);border-top:1px solid rgba(0,200,255,0.07);border-bottom:1px solid rgba(0,200,255,0.07);}
+.ticker-track{display:flex;animation:ticker 35s linear infinite;white-space:nowrap;}
+@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.tick{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;padding:.7rem 2.2rem;border-right:1px solid rgba(0,200,255,0.07);color:rgba(200,225,255,0.3);flex-shrink:0;}
+.tick .v{color:var(--cyan);}.tick .u{color:#28c840;}
+#logo-section{position:relative;z-index:1;padding:90px 0;background:var(--deep);overflow:hidden;border-top:1px solid rgba(0,200,255,0.08);border-bottom:1px solid rgba(0,200,255,0.08);}
+#logo-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 80% at 50% 50%,rgba(13,45,87,0.35) 0%,transparent 70%);}
+.logo-wrap{max-width:1100px;margin:0 auto;padding:0 3rem;display:flex;align-items:center;justify-content:center;gap:5rem;flex-wrap:wrap;}
+.logo-centerpiece{position:relative;display:flex;flex-direction:column;align-items:center;gap:0.8rem;}
+#logo3d{display:block;}
+.logo-name{font-family:var(--display);font-weight:900;font-size:2rem;letter-spacing:0.12em;color:var(--white);text-shadow:0 0 20px rgba(0,200,255,0.3);}
+.logo-name span{color:var(--cyan);text-shadow:0 0 15px var(--cyan);}
+.logo-sub{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.45em;text-transform:uppercase;color:var(--cyan2);opacity:0.7;text-align:center;}
+.logo-pillars{display:flex;flex-direction:column;gap:1.2rem;max-width:360px;}
+.pillar{display:flex;align-items:flex-start;gap:1rem;padding:1.1rem 1.4rem;background:rgba(7,20,40,0.7);border:1px solid rgba(0,200,255,0.07);border-left:2px solid var(--cyan);transition:background 0.25s;}
+.pillar:hover{background:rgba(10,31,61,0.85);}
+.pillar-icon{font-size:1.3rem;flex-shrink:0;}
+.pillar-title{font-family:var(--display);font-weight:700;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--cyan);margin-bottom:.25rem;}
+.pillar-text{font-size:0.86rem;color:rgba(200,225,255,0.48);line-height:1.55;}
+section{position:relative;z-index:1;}
+.container{max-width:1200px;margin:0 auto;padding:0 3rem;}
+.sec-tag{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--cyan2);margin-bottom:.6rem;display:flex;align-items:center;gap:.6rem;}
+.sec-tag::before{content:'//';color:rgba(0,200,255,0.3);}
+.sec-title{font-family:var(--display);font-weight:900;font-size:clamp(1.7rem,3.2vw,2.6rem);text-transform:uppercase;letter-spacing:0.04em;line-height:1.06;}
+.sec-title .hl{color:var(--cyan);text-shadow:0 0 18px rgba(0,200,255,0.3);}
+.sec-desc{font-size:.96rem;font-weight:500;color:rgba(200,225,255,0.43);line-height:1.75;max-width:540px;margin-top:.9rem;}
+.sec-head{margin-bottom:3rem;}
+#features{padding:100px 0;background:var(--black);}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(0,200,255,0.05);}
+.feat-card{background:var(--black);padding:2.2rem;position:relative;overflow:hidden;transition:background .3s;}
+.feat-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);transform:scaleX(0);transition:transform .4s;}
+.feat-card:hover{background:var(--navy);}.feat-card:hover::before{transform:scaleX(1);}
+.feat-num{font-family:var(--mono);font-size:0.58rem;letter-spacing:.2em;color:rgba(0,200,255,.22);margin-bottom:.9rem;display:block;}
+.feat-icon{font-size:1.7rem;margin-bottom:.9rem;display:block;}
+.feat-title{font-family:var(--display);font-weight:700;font-size:.85rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.7rem;}
+.feat-desc{font-size:.85rem;color:rgba(200,225,255,.42);line-height:1.62;}
+#eco{padding:60px 0;background:linear-gradient(135deg,rgba(0,40,20,0.6) 0%,rgba(2,4,8,1) 60%);border-top:1px solid rgba(0,200,120,0.15);border-bottom:1px solid rgba(0,200,120,0.15);}
+.eco-inner{display:flex;align-items:center;gap:3rem;flex-wrap:wrap;}
+.eco-icon{font-size:3.5rem;flex-shrink:0;}
+.eco-text h2{font-family:var(--display);font-weight:900;font-size:clamp(1.4rem,2.5vw,2rem);text-transform:uppercase;letter-spacing:.04em;}
+.eco-text h2 span{color:var(--green);text-shadow:0 0 16px rgba(0,200,122,0.4);}
+.eco-text p{color:rgba(200,255,220,0.45);font-size:.96rem;line-height:1.7;max-width:580px;margin-top:.6rem;}
+.eco-stats{display:flex;gap:2rem;flex-wrap:wrap;margin-top:1.5rem;}
+.eco-stat .n{font-family:var(--display);font-weight:900;font-size:1.8rem;color:var(--green);}
+.eco-stat .l{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,200,122,0.5);}
+#ecosystem{padding:100px 0;background:var(--deep);border-top:1px solid rgba(0,200,255,0.07);}
+.eco-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(0,200,255,0.05);margin-top:3rem;}
+.eco-card{background:var(--deep);padding:2.4rem;position:relative;overflow:hidden;transition:background .3s;cursor:default;}
+.eco-card::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;transition:width .4s;}
+.eco-card:hover{background:var(--navy);}.eco-card:hover::after{width:100%;}
+.eco-card.traxion::after{background:linear-gradient(90deg,var(--cyan),transparent);}
+.eco-card.novafold::after{background:linear-gradient(90deg,#a855f7,transparent);}
+.eco-card.qlock::after{background:linear-gradient(90deg,var(--red),transparent);}
+.eco-card.energia::after{background:linear-gradient(90deg,#f59e0b,transparent);}
+.eco-card.meta::after{background:linear-gradient(90deg,#64748b,transparent);}
+.eco-card.comms::after{background:linear-gradient(90deg,#00e5aa,transparent);}
+.eco-card-tag{font-family:var(--mono);font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem;}
+.eco-card-tag .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.traxion .dot{background:var(--cyan);}.traxion .eco-label{color:var(--cyan);}
+.novafold .dot{background:#a855f7;}.novafold .eco-label{color:#a855f7;}
+.qlock .dot{background:var(--red);}.qlock .eco-label{color:var(--red);}
+.energia .dot{background:#f59e0b;}.energia .eco-label{color:#f59e0b;}
+.meta .dot{background:#94a3b8;}.meta .eco-label{color:#94a3b8;}
+.comms .dot{background:#00e5aa;}.comms .eco-label{color:#00e5aa;}
+.eco-card-icon{font-size:2.2rem;margin-bottom:1rem;display:block;}
+.eco-card-name{font-family:var(--display);font-weight:900;font-size:1.1rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;}
+.eco-card-role{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.9rem;opacity:.5;}
+.eco-card-desc{font-size:.86rem;color:rgba(200,225,255,.42);line-height:1.62;}
+.eco-card-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.2rem;}
+.eco-tag{font-family:var(--mono);font-size:.55rem;letter-spacing:.1em;padding:.25rem .7rem;border:1px solid rgba(0,200,255,.15);color:rgba(0,200,255,.45);text-transform:uppercase;}
+#how{padding:100px 0;background:var(--black);border-top:1px solid rgba(0,200,255,0.06);}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);margin-top:3rem;position:relative;}
+.steps::before{content:'';position:absolute;top:2.3rem;left:12%;right:12%;height:1px;background:linear-gradient(90deg,var(--cyan),rgba(0,200,255,.12),var(--cyan));opacity:.2;}
+.step{padding:0 1.2rem 2rem;text-align:center;}
+.step-hex{width:4.6rem;height:4.6rem;margin:0 auto 1.4rem;border:1px solid rgba(0,200,255,.22);background:var(--black);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:900;font-size:1.1rem;color:var(--cyan);position:relative;z-index:1;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);transition:background .3s;}
+.step:hover .step-hex{background:rgba(0,200,255,.07);}
+.step-title{font-family:var(--display);font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.6rem;}
+.step-desc{font-size:.82rem;color:rgba(200,225,255,.38);line-height:1.6;}
+#services{padding:100px 0;background:var(--deep);border-top:1px solid rgba(0,200,255,0.06);}
+.srv-layout{display:grid;grid-template-columns:1fr 1.1fr;gap:4rem;align-items:start;}
+.srv-list{display:flex;flex-direction:column;gap:2px;}
+.srv-item{display:flex;gap:1.3rem;align-items:flex-start;padding:1.6rem;background:rgba(4,13,26,.8);border:1px solid rgba(0,200,255,.06);border-left:2px solid transparent;transition:border-color .25s,background .25s;cursor:default;}
+.srv-item:hover{border-left-color:rgba(0,200,255,.6);background:rgba(7,20,40,.9);}
+.srv-icon{font-size:1.4rem;flex-shrink:0;}
+.srv-name{font-family:var(--display);font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem;}
+.srv-desc{font-size:.84rem;color:rgba(200,225,255,.38);line-height:1.58;}
+.terminal{background:var(--navy);border:1px solid rgba(0,200,255,.15);}
+.t-bar{background:rgba(0,200,255,.05);border-bottom:1px solid rgba(0,200,255,.1);padding:.7rem 1.1rem;display:flex;align-items:center;gap:.55rem;}
+.t-dot{width:9px;height:9px;border-radius:50%;}
+.td1{background:#ff5f57;}.td2{background:#febc2e;}.td3{background:#28c840;}
+.t-title{font-family:var(--mono);font-size:.62rem;color:rgba(200,225,255,.3);margin-left:.4rem;}
+.t-body{padding:1.3rem 1.1rem;font-family:var(--mono);font-size:.7rem;line-height:2;color:rgba(200,225,255,.42);min-height:230px;}
+.tc{color:var(--cyan);}.tg{color:#28c840;}.ty{color:#febc2e;}.tr{color:#ff5f57;}.tdm{color:rgba(200,225,255,.22);}
+.cb{animation:blink 1s infinite;}
+.img-slot{width:100%;aspect-ratio:16/9;background:var(--blue1);border-top:1px solid rgba(0,200,255,.09);display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(0,200,255,.22);font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;gap:.4rem;}
+#cta{padding:80px 0;background:radial-gradient(ellipse 70% 100% at 50% 50%,rgba(13,45,87,.28) 0%,var(--black) 70%);border-top:1px solid rgba(0,200,255,.07);}
+.cta-in{display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+.cta-in h2{font-family:var(--display);font-weight:900;font-size:clamp(1.7rem,3vw,2.5rem);text-transform:uppercase;letter-spacing:.04em;line-height:1.1;}
+.cta-in h2 span{color:var(--cyan);}
+.cta-in p{color:rgba(200,225,255,.38);margin-top:.5rem;}
+#contact{padding:100px 0;background:var(--deep);border-top:1px solid rgba(0,200,255,.06);}
+.cnt-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;}
+.cnt-title{font-family:var(--display);font-weight:900;font-size:.95rem;text-transform:uppercase;letter-spacing:.12em;color:var(--cyan);margin-bottom:.5rem;}
+.cnt-sub{color:rgba(200,225,255,.38);font-size:.88rem;margin-bottom:1.8rem;}
+.cnt-detail{display:flex;gap:.9rem;align-items:flex-start;margin-bottom:1.3rem;}
+.cnt-detail-icon{font-size:1rem;flex-shrink:0;}
+.cnt-detail label{display:block;font-family:var(--mono);font-size:.56rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gray);}
+.cnt-detail span{font-weight:600;font-size:.88rem;}
+.cnt-form{display:flex;flex-direction:column;gap:.9rem;}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;}
+.f-group{display:flex;flex-direction:column;gap:.35rem;}
+.f-group label{font-family:var(--mono);font-size:.56rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gray);}
+.f-group input,.f-group textarea,.f-group select{background:rgba(2,4,8,.95);border:1px solid rgba(0,200,255,.1);color:var(--white);padding:.75rem .95rem;font-family:var(--body);font-size:.93rem;outline:none;transition:border-color .2s;}
+.f-group input:focus,.f-group textarea:focus,.f-group select:focus{border-color:var(--cyan);}
+.f-group textarea{resize:vertical;min-height:105px;}
+.f-group select option{background:var(--black);}
+::placeholder{color:rgba(200,225,255,.16);}
+footer{background:var(--black);border-top:1px solid rgba(0,200,255,.08);padding:2.2rem 3rem;}
+.ft-line{height:1px;background:linear-gradient(90deg,transparent,rgba(0,200,255,.2),transparent);margin-bottom:2.2rem;}
+.ft-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+.ft-brand{display:flex;align-items:center;gap:.7rem;}
+.ft-brand canvas{display:block;}
+.ft-brand-name{font-family:var(--display);font-weight:900;font-size:.95rem;letter-spacing:.1em;}
+.ft-brand-name span{color:var(--cyan);}
+.ft-links{display:flex;gap:2rem;list-style:none;}
+.ft-links a{font-family:var(--mono);font-size:.58rem;color:var(--gray);letter-spacing:.12em;text-transform:uppercase;transition:color .2s;}
+.ft-links a:hover{color:var(--cyan);}
+.ft-copy{font-family:var(--mono);font-size:.58rem;color:rgba(74,106,138,.45);}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+@media(max-width:960px){.feat-grid{grid-template-columns:1fr 1fr;}.eco-grid{grid-template-columns:1fr 1fr;}.steps{grid-template-columns:1fr 1fr;}.srv-layout,.cnt-grid{grid-template-columns:1fr;}.hero-stats{display:none;}.cta-in{flex-direction:column;}.nav-links{display:none;}.f-row{grid-template-columns:1fr;}.logo-wrap{flex-direction:column;}.logo-pillars{max-width:100%;}}
+@media(max-width:600px){.container{padding:0 1.5rem;}nav{padding:0 1.5rem;}#hero{padding:80px 1.5rem 60px;}.feat-grid,.eco-grid,.steps{grid-template-columns:1fr;}footer{padding:2rem 1.5rem;}}
+
+#logo3d, #logo-nav, #logo-footer {
+  display: block !important;
+  opacity: 1 !important;
 }
 
-body {
-  background: radial-gradient(circle at top, #0b1120, #020617);
-  color: white;
-  font-family: 'Inter', sans-serif;
-}
-
-/* NAVBAR */
-nav {
-  position: fixed;
-  width: 100%;
-  padding: 20px 10%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(2,6,23,0.8);
-  backdrop-filter: blur(8px);
-  z-index: 1000;
-}
-
-nav .logo-text {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 18px;
-  letter-spacing: 2px;
-}
-
-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 30px;
-}
-
-nav ul li a {
-  text-decoration: none;
-  color: white;
-  opacity: 0.8;
-  transition: 0.3s;
-}
-
-nav ul li a:hover {
-  opacity: 1;
-}
-
-/* SECTIONS */
-section {
-  padding: 120px 10%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-h1 {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 64px;
-  letter-spacing: 3px;
-  background: linear-gradient(90deg, #3b82f6, #60a5fa, #93c5fd);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 25px rgba(59,130,246,0.4);
-  margin-bottom: 20px;
-}
-
-h2 {
-  font-size: 40px;
-  margin-bottom: 20px;
-}
-
-p {
-  max-width: 700px;
-  opacity: 0.8;
-  font-size: 18px;
-}
-
-/* HERO ANIMACIÓN */
-.fade-up {
-  opacity: 0;
-  transform: translateY(30px);
-  animation: fadeUp 1.2s ease forwards;
-}
-
-.fade-up.delay {
-  animation-delay: 0.3s;
-}
-
-@keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.logo {
-  width: 140px;
-  margin-bottom: 30px;
-}
-
-footer {
-  text-align: center;
-  padding: 40px;
-  opacity: 0.5;
-  border-top: 1px solid #1e293b;
-}
 </style>
 </head>
-
 <body>
 
 <nav>
-  <div class="logo-text">BERENICE AI</div>
-  <ul>
-    <li><a href="#quienes">Quiénes Somos</a></li>
-    <li><a href="#proyectos">Proyectos</a></li>
-    <li><a href="#ecosistema">Ecosistema</a></li>
-    <li><a href="#tecnologia">Tecnología</a></li>
-    <li><a href="#contacto">Contacto</a></li>
+  <div class="nav-brand">
+    <canvas id="logo-nav" width="40" height="40"></canvas>
+    <div class="nav-brand-text">BERENICE<span>AI</span></div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#features">Capacidades</a></li>
+    <li><a href="#ecosystem">Ecosistema</a></li>
+    <li><a href="#how">Proceso</a></li>
+    <li><a href="#services">Sectores</a></li>
+    <li><a href="#contact">Contacto</a></li>
   </ul>
+  <a href="#contact" class="nav-cta">[ SOLICITAR DEMO ]</a>
 </nav>
 
-<section id="inicio">
-  <img src="logo.png" class="logo fade-up">
-  <h1 class="fade-up delay">BERENICE AI</h1>
-  <p class="fade-up delay">
-    Infraestructura avanzada para optimización computacional a gran escala.
-  </p>
+<section id="hero">
+  <div class="corner c-tl"></div><div class="corner c-tr"></div>
+  <div class="corner c-bl"></div><div class="corner c-br"></div>
+  <div class="radar"><div class="radar-ring"></div><div class="radar-ring"></div><div class="radar-ring"></div><div class="radar-sweep"></div></div>
+  <div class="hero-content">
+    <div class="hero-tag">SYS:BERENICE_AI &nbsp;// &nbsp;STATUS: ONLINE &nbsp;// &nbsp;v3.1.2</div>
+    <h1 class="hero-title">
+      <div class="l1">MOTOR DE</div>
+      <div class="l2">OPTIMIZACIÓN</div>
+      <div class="l3">INDUSTRIAL</div>
+    </h1>
+    <p class="hero-sub"><strong>Berenice AI</strong> es el núcleo de inteligencia que impulsa un ecosistema de empresas tecnológicas de vanguardia. Un solo motor, múltiples fronteras.</p>
+    <div class="hero-btns">
+      <a href="#ecosystem" class="btn-primary">VER ECOSISTEMA</a>
+      <a href="#contact" class="btn-outline">SOLICITAR DEMO</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-card"><div class="stat-num">40%</div><div class="stat-label">REDUCCIÓN DE COSTOS</div></div>
+    <div class="stat-card"><div class="stat-num">98.4%</div><div class="stat-label">PRECISIÓN PREDICTIVA</div></div>
+    <div class="stat-card"><div class="stat-num">24/7</div><div class="stat-label">MONITOREO CONTINUO</div></div>
+    <div class="stat-card"><div class="stat-num">&lt;50ms</div><div class="stat-label">LATENCIA DE RESPUESTA</div></div>
+  </div>
 </section>
 
-<section id="quienes">
-  <h2>Quiénes Somos</h2>
-  <p>
-    Berenice AI es una iniciativa enfocada en el desarrollo de arquitecturas 
-    computacionales propietarias para resolver problemas combinatorios complejos.
-  </p>
+<div id="ticker"><div class="ticker-track">
+  <div class="tick">EFICIENCIA OPERATIVA <span class="v">+34.2%</span> <span class="u">▲</span></div>
+  <div class="tick">PARADAS NO PLANIFICADAS <span class="v">-81%</span> <span class="u">▲</span></div>
+  <div class="tick">CONSUMO ENERGÉTICO <span class="v">-22.5%</span> <span class="u">▲</span></div>
+  <div class="tick">THROUGHPUT <span class="v">+18.9%</span> <span class="u">▲</span></div>
+  <div class="tick">PRECISIÓN <span class="v">98.4%</span></div>
+  <div class="tick">LATENCIA <span class="v">&lt;50ms</span></div>
+  <div class="tick">MODELOS ACTIVOS <span class="v">47</span></div>
+  <div class="tick">EMISIONES CO₂ <span class="v">-63%</span> <span class="u">▲</span></div>
+  <div class="tick">EFICIENCIA OPERATIVA <span class="v">+34.2%</span> <span class="u">▲</span></div>
+  <div class="tick">PARADAS NO PLANIFICADAS <span class="v">-81%</span> <span class="u">▲</span></div>
+  <div class="tick">CONSUMO ENERGÉTICO <span class="v">-22.5%</span> <span class="u">▲</span></div>
+  <div class="tick">THROUGHPUT <span class="v">+18.9%</span> <span class="u">▲</span></div>
+  <div class="tick">PRECISIÓN <span class="v">98.4%</span></div>
+  <div class="tick">LATENCIA <span class="v">&lt;50ms</span></div>
+  <div class="tick">MODELOS ACTIVOS <span class="v">47</span></div>
+  <div class="tick">EMISIONES CO₂ <span class="v">-63%</span> <span class="u">▲</span></div>
+</div></div>
+
+<section id="logo-section">
+  <div class="logo-wrap">
+    <div class="logo-centerpiece">
+      <canvas id="logo3d" width="320" height="320"></canvas>
+      <div class="logo-name">BERENICE<span>AI</span></div>
+      <div class="logo-sub">ARTIFICIAL INTELLIGENCE · INDUSTRIAL ENGINE</div>
+    </div>
+    <div class="logo-pillars">
+      <div class="pillar reveal"><span class="pillar-icon">⚡</span><div><div class="pillar-title">Velocidad Industrial</div><p class="pillar-text">Procesamiento en tiempo real con latencia sub-50ms. Decisiones en el momento exacto en que importan.</p></div></div>
+      <div class="pillar reveal"><span class="pillar-icon">🧠</span><div><div class="pillar-title">IA Contextual</div><p class="pillar-text">Modelos entrenados en tu operación específica. No IA genérica, inteligencia que conoce tu proceso.</p></div></div>
+      <div class="pillar reveal"><span class="pillar-icon">🔒</span><div><div class="pillar-title">Seguridad Crítica</div><p class="pillar-text">Infraestructura de nivel industrial. On-premise o nube privada con cifrado post-cuántico.</p></div></div>
+    </div>
+  </div>
 </section>
 
-<section id="proyectos">
-  <h2>Proyectos</h2>
-  <p>
-    Desarrollo de sistemas de optimización de alto rendimiento aplicables 
-    a logística, redes, telecomunicaciones y planificación dinámica.
-  </p>
+<section id="eco">
+  <div class="container">
+    <div class="eco-inner">
+      <div class="eco-icon">🌿</div>
+      <div class="eco-text">
+        <h2>El motor de IA más <span>eco-eficiente</span> de la industria</h2>
+        <p>La eficiencia de nuestro motor no solo reduce costos operativos, sino que minimiza drásticamente el impacto ambiental. Berenice AI consume significativamente menos recursos que cualquier solución comparable.</p>
+        <div class="eco-stats">
+          <div class="eco-stat"><div class="n">63%</div><div class="l">Menos emisiones CO₂</div></div>
+          <div class="eco-stat"><div class="n">71%</div><div class="l">Menos energía compute</div></div>
+          <div class="eco-stat"><div class="n">2x</div><div class="l">Más eficiente</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section id="ecosistema">
-  <h2>Ecosistema Berenice</h2>
-  <p>
-    Construimos un entorno tecnológico que integra investigación,
-    arquitectura computacional y aplicaciones industriales.
-  </p>
+<section id="features">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-tag">MÓDULOS CORE</div>
+      <h2 class="sec-title">IA diseñada para la <span class="hl">industria real</span></h2>
+      <p class="sec-desc">Modelos entrenados para entornos industriales con capacidad de adaptación a cada proceso.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card reveal"><span class="feat-num">// 01</span><span class="feat-icon">⚙️</span><div class="feat-title">Mantenimiento Predictivo</div><p class="feat-desc">Anticipamos fallas antes de que ocurran. Reducción de paradas no planificadas hasta 85%.</p></div>
+      <div class="feat-card reveal"><span class="feat-num">// 02</span><span class="feat-icon">📊</span><div class="feat-title">Optimización de Procesos</div><p class="feat-desc">Análisis en tiempo real para maximizar rendimiento y reducir desperdicios.</p></div>
+      <div class="feat-card reveal"><span class="feat-num">// 03</span><span class="feat-icon">🔍</span><div class="feat-title">Detección de Anomalías</div><p class="feat-desc">Identificación automática de desviaciones con alertas por nivel de riesgo.</p></div>
+      <div class="feat-card reveal"><span class="feat-num">// 04</span><span class="feat-icon">🏭</span><div class="feat-title">Gemelo Digital</div><p class="feat-desc">Réplica virtual para simulación y prueba de escenarios sin riesgo operativo.</p></div>
+      <div class="feat-card reveal"><span class="feat-num">// 05</span><span class="feat-icon">📡</span><div class="feat-title">Integración IoT</div><p class="feat-desc">Conexión con sensores, PLCs y SCADA. Compatible con Modbus, OPC-UA, MQTT.</p></div>
+      <div class="feat-card reveal"><span class="feat-num">// 06</span><span class="feat-icon">📈</span><div class="feat-title">Analytics Ejecutivo</div><p class="feat-desc">Dashboards en tiempo real, reportes automáticos y recomendaciones accionables.</p></div>
+    </div>
+  </div>
 </section>
 
-<section id="tecnologia">
-  <h2>Tecnología</h2>
-  <p>
-    Infraestructura avanzada diseñada para escalar más allá de los
-    límites tradicionales de optimización.
-  </p>
+<section id="ecosystem">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-tag">ECOSISTEMA BERENICE</div>
+      <h2 class="sec-title">Un motor. <span class="hl">Múltiples fronteras.</span></h2>
+      <p class="sec-desc">Berenice AI impulsa un conjunto de empresas especializadas, cada una liderando su dominio.</p>
+    </div>
+    <div class="eco-grid">
+      <div class="eco-card traxion reveal"><div class="eco-card-tag"><span class="dot"></span><span class="eco-label">LOGÍSTICA GLOBAL</span></div><span class="eco-card-icon">🚛</span><div class="eco-card-name">TRAXION</div><div class="eco-card-role">Optimización Logística Global</div><p class="eco-card-desc">Motor de optimización para cadenas de suministro globales. Rutas inteligentes, predicción de demanda y gestión de flota en tiempo real.</p><div class="eco-card-tags"><span class="eco-tag">Rutas IA</span><span class="eco-tag">Supply chain</span></div></div>
+      <div class="eco-card novafold reveal"><div class="eco-card-tag"><span class="dot"></span><span class="eco-label">BIOTECNOLOGÍA</span></div><span class="eco-card-icon">🧬</span><div class="eco-card-name">NOVAFOLD</div><div class="eco-card-role">Mutación y Diseño de Proteínas</div><p class="eco-card-desc">Plataforma de IA para diseño y predicción de estructuras proteicas. Acelera el descubrimiento de fármacos mediante simulación molecular.</p><div class="eco-card-tags"><span class="eco-tag" style="border-color:rgba(168,85,247,.25);color:rgba(168,85,247,.55);">Folding IA</span><span class="eco-tag" style="border-color:rgba(168,85,247,.25);color:rgba(168,85,247,.55);">Drug discovery</span></div></div>
+      <div class="eco-card qlock reveal"><div class="eco-card-tag"><span class="dot"></span><span class="eco-label">CIBERSEGURIDAD</span></div><span class="eco-card-icon">🔐</span><div class="eco-card-name">QUANTUM LOCK</div><div class="eco-card-role">Seguridad Criptográfica Post-Cuántica</div><p class="eco-card-desc">Seguridad resistente a computación cuántica. Protege infraestructuras críticas y comunicaciones industriales.</p><div class="eco-card-tags"><span class="eco-tag" style="border-color:rgba(204,34,0,.25);color:rgba(255,80,50,.5);">Post-quantum</span><span class="eco-tag" style="border-color:rgba(204,34,0,.25);color:rgba(255,80,50,.5);">Cifrado avanzado</span></div></div>
+      <div class="eco-card energia reveal"><div class="eco-card-tag"><span class="dot"></span><span class="eco-label">ENERGÍA</span></div><span class="eco-card-icon">⚡</span><div class="eco-card-name">OPTIMIZACIÓN DE ENERGÍAS</div><div class="eco-card-role">Eólica · Solar · Nuclear · Petrolera</div><p class="eco-card-desc">Maximizamos eficiencia en generación y distribución energética. Predicción de generación, balanceo de redes y mantenimiento predictivo.</p><div class="eco-card-tags"><span class="eco-tag" style="border-color:rgba(245,158,11,.2);color:rgba(245,158,11,.55);">Solar</span><span class="eco-tag" style="border-color:rgba(245,158,11,.2);color:rgba(245,158,11,.55);">Eólica</span><span class="eco-tag" style="border-color:rgba(245,158,11,.2);color:rgba(245,158,11,.55);">Nuclear</span></div></div>
+      <div class="eco-card meta reveal"><div class="eco-card-tag"><span class="dot"></span><span class="eco-label">MATERIALES AVANZADOS</span></div><span class="eco-card-icon">🔩</span><div class="eco-card-name">METAMATERIALES</div><div class="eco-card-role">Ingeniería de Materiales de Alto Impacto</div><p class="eco-card-desc">Diseño de materiales de nueva generación. Modificamos metales, plásticos y compuestos para aplicaciones militares, aeroespaciales e industriales.</p><div class="eco-card-tags"><span class="eco-tag" style="border-color:rgba(148,163,184,.18);color:rgba(148,163,184,.5);">Defensa</span><span class="eco-tag" style="border-color:rgba(148,163,184,.18);color:rgba(148,163,184,.5);">Aeroespacial</span></div></div>
+      <div class="eco-card comms reveal"><div class="eco-card-tag"><span class="dot"></span><span class="eco-label">TELECOMUNICACIONES</span></div><span class="eco-card-icon">📡</span><div class="eco-card-name">COMUNICACIONES</div><div class="eco-card-role">Transmisión de Datos Instantánea</div><p class="eco-card-desc">Sistema de transporte de datos instantáneo sin dependencia de internet convencional. Latencia ultra-baja para infraestructuras críticas y defensa.</p><div class="eco-card-tags"><span class="eco-tag" style="border-color:rgba(0,229,170,.2);color:rgba(0,229,170,.55);">Latencia cero</span><span class="eco-tag" style="border-color:rgba(0,229,170,.2);color:rgba(0,229,170,.55);">Sin internet</span></div></div>
+    </div>
+  </div>
 </section>
 
-<section id="contacto">
-  <h2>Contacto</h2>
-  <p>
-    Consultas e inversión:<br><br>
-    contact@bereniceai.com
-  </p>
+<section id="how">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-tag">METODOLOGÍA</div>
+      <h2 class="sec-title">Proceso de <span class="hl">implementación</span></h2>
+      <p class="sec-desc">Sin fricción, sin interrupciones. Diseñado para la realidad de una planta en producción.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="step-hex">01</div><div class="step-title">Diagnóstico</div><p class="step-desc">Analizamos planta, datos y objetivos para el plan óptimo.</p></div>
+      <div class="step reveal"><div class="step-hex">02</div><div class="step-title">Integración</div><p class="step-desc">Conectamos con tus sistemas sin interrumpir operaciones.</p></div>
+      <div class="step reveal"><div class="step-hex">03</div><div class="step-title">Entrenamiento</div><p class="step-desc">Los modelos se calibran a tu operación específica.</p></div>
+      <div class="step reveal"><div class="step-hex">04</div><div class="step-title">Producción</div><p class="step-desc">Sistema activo 24/7 con soporte y mejora iterativa.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="container">
+    <div class="srv-layout">
+      <div>
+        <div class="sec-head reveal">
+          <div class="sec-tag">SECTORES</div>
+          <h2 class="sec-title">Soluciones para <span class="hl">cada industria</span></h2>
+          <p class="sec-desc">Adaptamos nuestra IA a las condiciones reales de tu sector.</p>
+        </div>
+        <div class="srv-list">
+          <div class="srv-item reveal"><span class="srv-icon">⛏️</span><div><div class="srv-name">Minería e Hidrocarburos</div><p class="srv-desc">Optimización de extracción y mantenimiento de equipos pesados.</p></div></div>
+          <div class="srv-item reveal"><span class="srv-icon">🏗️</span><div><div class="srv-name">Manufactura Avanzada</div><p class="srv-desc">Control de calidad automatizado y optimización de líneas.</p></div></div>
+          <div class="srv-item reveal"><span class="srv-icon">⚡</span><div><div class="srv-name">Energía y Utilities</div><p class="srv-desc">Predicción de demanda, balanceo de carga y gestión de activos.</p></div></div>
+          <div class="srv-item reveal"><span class="srv-icon">🚛</span><div><div class="srv-name">Logística Industrial</div><p class="srv-desc">Rutas, inventario y predicción de demanda en cadenas complejas.</p></div></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="terminal">
+          <div class="t-bar"><span class="t-dot td1"></span><span class="t-dot td2"></span><span class="t-dot td3"></span><span class="t-title">berenice_ai — monitor.sh</span></div>
+          <div class="t-body">
+            <div><span class="tg">$</span> <span class="tc">berenice</span> status --live</div>
+            <div class="tdm">Connecting to edge nodes...</div>
+            <div><span class="tg">✓</span> Cluster: <span class="tc">ONLINE [12/12]</span></div>
+            <div><span class="tg">✓</span> Sensor feeds: <span class="tc">2.400 active</span></div>
+            <div><span class="tg">✓</span> Inference: <span class="tc">47 models running</span></div>
+            <div>&nbsp;</div>
+            <div><span class="tg">$</span> <span class="tc">berenice</span> alerts --high</div>
+            <div class="tdm">Scanning log...</div>
+            <div><span class="ty">⚠</span> PUMP_07: vibration +18% <span class="ty">[WATCH]</span></div>
+            <div><span class="tr">✗</span> COMP_03: temp critical <span class="tr">[ACTION]</span></div>
+            <div>&nbsp;</div>
+            <div><span class="tg">$</span> berenice predict --unit COMP_03</div>
+            <div>Failure: <span class="tr">18h±2h</span> · <span class="tc">MAINTENANCE</span></div>
+            <div class="tdm">_<span class="cb">█</span></div>
+          </div>
+          <div class="img-slot"><span style="font-size:1.8rem;opacity:.2">🖼</span><span>images/dashboard.jpg</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cta">
+  <div class="container">
+    <div class="cta-in">
+      <div class="reveal">
+        <h2>¿Listo para transformar tu <span>operación</span>?</h2>
+        <p>Una demo de 30 minutos. Sin compromisos. Con datos de tu industria.</p>
+      </div>
+      <a href="#contact" class="btn-primary" style="font-size:.65rem;padding:1rem 2.5rem;">AGENDAR DEMO GRATUITA</a>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-tag">CONTACTO</div>
+      <h2 class="sec-title">Hablemos de tu <span class="hl">proyecto</span></h2>
+    </div>
+    <div class="cnt-grid">
+      <div class="reveal">
+        <div class="cnt-title">BERENICE AI</div>
+        <p class="cnt-sub">Respondemos dentro de las próximas 24 horas hábiles.</p>
+        <div class="cnt-detail"><span class="cnt-detail-icon">📍</span><div><label>UBICACIÓN</label><span>Argentina</span></div></div>
+        <div class="cnt-detail"><span class="cnt-detail-icon">✉️</span><div><label>EMAIL</label><span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c6a5a9a8b2a7a5b2a986a4a3b4a3a8afa5a3e8a7af">[email&#160;protected]</a></span></div></div>
+        <div class="cnt-detail"><span class="cnt-detail-icon">📞</span><div><label>TELÉFONO</label><span>+54 (000) 000-0000</span></div></div>
+      </div>
+      <div class="cnt-form reveal">
+        <div class="f-row">
+          <div class="f-group"><label>NOMBRE</label><input type="text" placeholder="Tu nombre"/></div>
+          <div class="f-group"><label>EMPRESA</label><input type="text" placeholder="Empresa S.A."/></div>
+        </div>
+        <div class="f-group"><label>EMAIL</label><input type="email" placeholder="tu@empresa.com"/></div>
+        <div class="f-group"><label>ÁREA DE INTERÉS</label><select><option value="">Seleccioná una opción</option><option>Berenice AI</option><option>TRAXION</option><option>NOVAFOLD</option><option>QUANTUM LOCK</option><option>Optimización de Energías</option><option>Metamateriales</option><option>Comunicaciones</option></select></div>
+        <div class="f-group"><label>MENSAJE</label><textarea placeholder="Describí tu desafío o proyecto..."></textarea></div>
+        <button class="btn-primary" style="border:none;cursor:pointer;align-self:flex-start;">ENVIAR MENSAJE →</button>
+      </div>
+    </div>
+  </div>
 </section>
 
 <footer>
-  © 2026 Berenice AI — All rights reserved.
+  <div class="ft-line"></div>
+  <div class="ft-inner">
+    <div class="ft-brand">
+      <canvas id="logo-footer" width="32" height="32"></canvas>
+      <div class="ft-brand-name">BERENICE<span>AI</span></div>
+    </div>
+    <ul class="ft-links">
+      <li><a href="#features">CAPACIDADES</a></li>
+      <li><a href="#ecosystem">ECOSISTEMA</a></li>
+      <li><a href="#services">SECTORES</a></li>
+      <li><a href="#contact">CONTACTO</a></li>
+    </ul>
+    <p class="ft-copy">© 2025 BERENICE AI — ALL RIGHTS RESERVED</p>
+  </div>
 </footer>
 
+<script>
+(function(){
+  function drawLogo(canvas, size){
+    if(!canvas) return;
+    canvas.width = size;
+    canvas.height = size;
+    var ctx = canvas.getContext('2d');
+    var cx = size/2, cy = size/2;
+    var sc = size * 0.37;
+    var t = 0;
+
+    function proj(x, y, z, ry, rx, fy){
+      var x1 = x*Math.cos(ry) + z*Math.sin(ry);
+      var z1 = -x*Math.sin(ry) + z*Math.cos(ry);
+      var y0 = y + fy;
+      var y2 = y0*Math.cos(rx) - z1*Math.sin(rx);
+      var z2 = y0*Math.sin(rx) + z1*Math.cos(rx);
+      return {x: cx + x1*sc, y: cy - y2*sc, z: z2};
+    }
+
+    function animate(){
+      requestAnimationFrame(animate);
+      t += 0.008;
+      var ry = t*0.7, rx = Math.sin(t*0.32)*0.22, fy = Math.sin(t*0.5)*0.07;
+      ctx.clearRect(0,0,size,size);
+
+      function p(x,y,z){ return proj(x,y,z,ry,rx,fy); }
+
+      var RO=1.28, RI=0.84, PD=0.20;
+      var CD=0.28;
+      var pF=PD/2, pB=-PD/2, cF=CD/2, cB=-CD/2;
+
+      function hv(r){
+        var v=[];
+        for(var i=0;i<6;i++){
+          var a=(i/6)*Math.PI*2+Math.PI/6;
+          v.push([Math.cos(a)*r, Math.sin(a)*r]);
+        }
+        return v;
+      }
+      var HO=hv(RO), HI=hv(RI);
+
+      var s=0.50, sx=s*0.866, sy=s*0.5, off=0.030;
+      var topF =[[ 0, s],[ sx, sy],[ 0, 0],[-sx, sy]].map(function(p){return [p[0],        p[1]+off      ];});
+      var rtF  =[[ 0, 0],[ sx, sy],[ sx,-sy],[ 0,-s]].map(function(p){return [p[0]+off*0.866, p[1]-off*0.5];});
+      var ltF  =[[-sx, sy],[ 0, 0],[ 0,-s],[-sx,-sy]].map(function(p){return [p[0]-off*0.866, p[1]-off*0.5];});
+
+      // ALL polygons to draw - no culling, just sort by avgZ
+      var polys = [];
+
+      function quad(a,b,c,d,col){
+        var pts=[a,b,c,d];
+        var z=0; pts.forEach(function(v){z+=v.z;}); z/=4;
+        polys.push({pts:pts,col:col,z:z});
+      }
+      function tri(a,b,c,col){
+        var pts=[a,b,c];
+        var z=(a.z+b.z+c.z)/3;
+        polys.push({pts:pts,col:col,z:z});
+      }
+
+      // ── HEX RING: front strips, back strips, outer sides, inner sides ──
+      for(var i=0;i<6;i++){
+        var j=(i+1)%6;
+        // front ring segment
+        quad(p(HO[i][0],HO[i][1],pF), p(HO[j][0],HO[j][1],pF),
+             p(HI[j][0],HI[j][1],pF), p(HI[i][0],HI[i][1],pF), '#1a5fc8');
+        // back ring segment
+        quad(p(HO[i][0],HO[i][1],pB), p(HO[j][0],HO[j][1],pB),
+             p(HI[j][0],HI[j][1],pB), p(HI[i][0],HI[i][1],pB), '#1040a0');
+        // outer side
+        quad(p(HO[i][0],HO[i][1],pF), p(HO[j][0],HO[j][1],pF),
+             p(HO[j][0],HO[j][1],pB), p(HO[i][0],HO[i][1],pB), '#0d3285');
+        // inner side
+        quad(p(HI[i][0],HI[i][1],pF), p(HI[j][0],HI[j][1],pF),
+             p(HI[j][0],HI[j][1],pB), p(HI[i][0],HI[i][1],pB), '#0f3a90');
+        // top edge cap between outer and inner
+        quad(p(HO[i][0],HO[i][1],pF), p(HO[j][0],HO[j][1],pF),
+             p(HO[j][0],HO[j][1],pB), p(HO[i][0],HO[i][1],pB), '#0d3285');
+      }
+
+      // ── CUBE: 3 rhombuses, each with front + back + all 4 sides ──
+      [[topF,'#2060cc','#0e3688','#1448b0'],
+       [rtF, '#1a52b8','#0c2e80','#1240a8'],
+       [ltF, '#163eb0','#0a2878','#1038a0']
+      ].forEach(function(fd){
+        var face=fd[0], cf=fd[1], cb=fd[2], cs=fd[3];
+        var n=face.length;
+        var fp=face.map(function(v){return p(v[0],v[1],cF);});
+        var bp=face.map(function(v){return p(v[0],v[1],cB);});
+
+        // front
+        var fz=0; fp.forEach(function(v){fz+=v.z;}); fz/=n;
+        polys.push({pts:fp.slice(), col:cf, z:fz});
+        // back
+        var bz=0; bp.forEach(function(v){bz+=v.z;}); bz/=n;
+        var bpRev=bp.slice().reverse();
+        polys.push({pts:bpRev, col:cb, z:bz});
+        // 4 side faces
+        for(var i=0;i<n;i++){
+          var j=(i+1)%n;
+          quad(fp[i],fp[j],bp[j],bp[i], cs);
+        }
+      });
+
+      // ── Sort back to front, draw ALL ──
+      polys.sort(function(a,b){return a.z-b.z;});
+
+      polys.forEach(function(q){
+        ctx.beginPath();
+        ctx.moveTo(q.pts[0].x,q.pts[0].y);
+        for(var i=1;i<q.pts.length;i++) ctx.lineTo(q.pts[i].x,q.pts[i].y);
+        ctx.closePath();
+        ctx.fillStyle=q.col;
+        ctx.fill();
+        ctx.strokeStyle='rgba(0,5,20,0.4)';
+        ctx.lineWidth=size>100?0.6:0.2;
+        ctx.stroke();
+      });
+    }
+    animate();
+  }
+
+  function init(){
+    drawLogo(document.getElementById('logo3d'),320);
+    drawLogo(document.getElementById('logo-nav'),40);
+    drawLogo(document.getElementById('logo-footer'),32);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
+
+<script>
+setTimeout(function(){
+  document.querySelectorAll('.reveal').forEach(function(el){
+    el.classList.add('visible');
+  });
+}, 500);
+</script>
 </body>
 </html>
