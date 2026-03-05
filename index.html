@@ -201,7 +201,7 @@ canvas { display: block; }
 
 <nav>
   <div class="nav-brand">
-    <canvas id="logo-nav" width="40" height="40"></canvas>
+    <img src="logo.png" alt="Berenice AI" style="width:36px;height:36px;display:block;flex-shrink:0;"/>
     <div class="nav-brand-text">BERENICE<span>AI</span></div>
   </div>
   <ul class="nav-links">
@@ -261,7 +261,7 @@ canvas { display: block; }
 <section id="logo-section">
   <div class="logo-wrap">
     <div class="logo-centerpiece">
-      <canvas id="logo3d" width="320" height="320"></canvas>
+      <img src="logo.png" alt="Berenice AI" style="width:140px;height:140px;filter:drop-shadow(0 0 18px rgba(0,200,255,0.35));"/>
       <div class="logo-name">BERENICE<span>AI</span></div>
       <div class="logo-sub">ARTIFICIAL INTELLIGENCE · INDUSTRIAL ENGINE</div>
     </div>
@@ -407,8 +407,8 @@ canvas { display: block; }
         <div class="cnt-title">BERENICE AI</div>
         <p class="cnt-sub">Respondemos dentro de las próximas 24 horas hábiles.</p>
         <div class="cnt-detail"><span class="cnt-detail-icon">📍</span><div><label>UBICACIÓN</label><span>Argentina</span></div></div>
-        <div class="cnt-detail"><span class="cnt-detail-icon">✉️</span><div><label>EMAIL</label><span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c6a5a9a8b2a7a5b2a986a4a3b4a3a8afa5a3e8a7af">[email&#160;protected]</a></span></div></div>
-        <div class="cnt-detail"><span class="cnt-detail-icon">📞</span><div><label>TELÉFONO</label><span>+54 (000) 000-0000</span></div></div>
+        <div class="cnt-detail"><span class="cnt-detail-icon">✉️</span><div><label>EMAIL</label><span>contact@bereniceai.xyz</span></div></div>
+        <div class="cnt-detail"><span class="cnt-detail-icon">📞</span><div><label>TELÉFONO</label><span>+54 11-3856-6059</span></div></div>
       </div>
       <div class="cnt-form reveal">
         <div class="f-row">
@@ -428,7 +428,7 @@ canvas { display: block; }
   <div class="ft-line"></div>
   <div class="ft-inner">
     <div class="ft-brand">
-      <canvas id="logo-footer" width="32" height="32"></canvas>
+      <img src="logo.png" alt="Berenice AI" style="width:28px;height:28px;display:block;"/>
       <div class="ft-brand-name">BERENICE<span>AI</span></div>
     </div>
     <ul class="ft-links">
@@ -441,152 +441,8 @@ canvas { display: block; }
   </div>
 </footer>
 
-<script>
-(function(){
-  function drawLogo(canvas, size){
-    if(!canvas) return;
-    canvas.width = size;
-    canvas.height = size;
-    var ctx = canvas.getContext('2d');
-    var cx = size/2, cy = size/2;
-    var sc = size * 0.37;
-    var t = 0;
 
-    function proj(x, y, z, ry, rx, fy){
-      var x1 = x*Math.cos(ry) + z*Math.sin(ry);
-      var z1 = -x*Math.sin(ry) + z*Math.cos(ry);
-      var y0 = y + fy;
-      var y2 = y0*Math.cos(rx) - z1*Math.sin(rx);
-      var z2 = y0*Math.sin(rx) + z1*Math.cos(rx);
-      return {x: cx + x1*sc, y: cy - y2*sc, z: z2};
-    }
 
-    function animate(){
-      requestAnimationFrame(animate);
-      t += 0.008;
-      var ry = t*0.7, rx = Math.sin(t*0.32)*0.22, fy = Math.sin(t*0.5)*0.07;
-      ctx.clearRect(0,0,size,size);
 
-      function p(x,y,z){ return proj(x,y,z,ry,rx,fy); }
-
-      var RO=1.28, RI=0.84, PD=0.20;
-      var CD=0.28;
-      var pF=PD/2, pB=-PD/2, cF=CD/2, cB=-CD/2;
-
-      function hv(r){
-        var v=[];
-        for(var i=0;i<6;i++){
-          var a=(i/6)*Math.PI*2+Math.PI/6;
-          v.push([Math.cos(a)*r, Math.sin(a)*r]);
-        }
-        return v;
-      }
-      var HO=hv(RO), HI=hv(RI);
-
-      var s=0.50, sx=s*0.866, sy=s*0.5, off=0.030;
-      var topF =[[ 0, s],[ sx, sy],[ 0, 0],[-sx, sy]].map(function(p){return [p[0],        p[1]+off      ];});
-      var rtF  =[[ 0, 0],[ sx, sy],[ sx,-sy],[ 0,-s]].map(function(p){return [p[0]+off*0.866, p[1]-off*0.5];});
-      var ltF  =[[-sx, sy],[ 0, 0],[ 0,-s],[-sx,-sy]].map(function(p){return [p[0]-off*0.866, p[1]-off*0.5];});
-
-      // ALL polygons to draw - no culling, just sort by avgZ
-      var polys = [];
-
-      function quad(a,b,c,d,col){
-        var pts=[a,b,c,d];
-        var z=0; pts.forEach(function(v){z+=v.z;}); z/=4;
-        polys.push({pts:pts,col:col,z:z});
-      }
-      function tri(a,b,c,col){
-        var pts=[a,b,c];
-        var z=(a.z+b.z+c.z)/3;
-        polys.push({pts:pts,col:col,z:z});
-      }
-
-      // ── HEX RING: front strips, back strips, outer sides, inner sides ──
-      for(var i=0;i<6;i++){
-        var j=(i+1)%6;
-        // front ring segment
-        quad(p(HO[i][0],HO[i][1],pF), p(HO[j][0],HO[j][1],pF),
-             p(HI[j][0],HI[j][1],pF), p(HI[i][0],HI[i][1],pF), '#1a5fc8');
-        // back ring segment
-        quad(p(HO[i][0],HO[i][1],pB), p(HO[j][0],HO[j][1],pB),
-             p(HI[j][0],HI[j][1],pB), p(HI[i][0],HI[i][1],pB), '#1040a0');
-        // outer side
-        quad(p(HO[i][0],HO[i][1],pF), p(HO[j][0],HO[j][1],pF),
-             p(HO[j][0],HO[j][1],pB), p(HO[i][0],HO[i][1],pB), '#0d3285');
-        // inner side
-        quad(p(HI[i][0],HI[i][1],pF), p(HI[j][0],HI[j][1],pF),
-             p(HI[j][0],HI[j][1],pB), p(HI[i][0],HI[i][1],pB), '#0f3a90');
-        // top edge cap between outer and inner
-        quad(p(HO[i][0],HO[i][1],pF), p(HO[j][0],HO[j][1],pF),
-             p(HO[j][0],HO[j][1],pB), p(HO[i][0],HO[i][1],pB), '#0d3285');
-      }
-
-      // ── CUBE: 3 rhombuses, each with front + back + all 4 sides ──
-      [[topF,'#2060cc','#0e3688','#1448b0'],
-       [rtF, '#1a52b8','#0c2e80','#1240a8'],
-       [ltF, '#163eb0','#0a2878','#1038a0']
-      ].forEach(function(fd){
-        var face=fd[0], cf=fd[1], cb=fd[2], cs=fd[3];
-        var n=face.length;
-        var fp=face.map(function(v){return p(v[0],v[1],cF);});
-        var bp=face.map(function(v){return p(v[0],v[1],cB);});
-
-        // front
-        var fz=0; fp.forEach(function(v){fz+=v.z;}); fz/=n;
-        polys.push({pts:fp.slice(), col:cf, z:fz});
-        // back
-        var bz=0; bp.forEach(function(v){bz+=v.z;}); bz/=n;
-        var bpRev=bp.slice().reverse();
-        polys.push({pts:bpRev, col:cb, z:bz});
-        // 4 side faces
-        for(var i=0;i<n;i++){
-          var j=(i+1)%n;
-          quad(fp[i],fp[j],bp[j],bp[i], cs);
-        }
-      });
-
-      // ── Sort back to front, draw ALL ──
-      polys.sort(function(a,b){return a.z-b.z;});
-
-      polys.forEach(function(q){
-        ctx.beginPath();
-        ctx.moveTo(q.pts[0].x,q.pts[0].y);
-        for(var i=1;i<q.pts.length;i++) ctx.lineTo(q.pts[i].x,q.pts[i].y);
-        ctx.closePath();
-        ctx.fillStyle=q.col;
-        ctx.fill();
-        ctx.strokeStyle='rgba(0,5,20,0.4)';
-        ctx.lineWidth=size>100?0.6:0.2;
-        ctx.stroke();
-      });
-    }
-    animate();
-  }
-
-  function init(){
-    drawLogo(document.getElementById('logo3d'),320);
-    drawLogo(document.getElementById('logo-nav'),40);
-    drawLogo(document.getElementById('logo-footer'),32);
-  }
-  // Try immediately
-  try { init(); } catch(e){}
-  // Try on DOMContentLoaded
-  document.addEventListener('DOMContentLoaded', function(){ try{ init(); }catch(e){} });
-  // Try on load (final fallback)
-  window.addEventListener('load', function(){ try{ init(); }catch(e){} });
-  // Also retry after short delays in case canvas not ready
-  setTimeout(function(){ try{ init(); }catch(e){} }, 100);
-  setTimeout(function(){ try{ init(); }catch(e){} }, 500);
-})();
-</script>
-
-<script>
-setTimeout(function(){
-  document.querySelectorAll('.reveal').forEach(function(el){
-    el.classList.add('visible');
-  });
-}, 500);
-</script>
 </body>
 </html>
