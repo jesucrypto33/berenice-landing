@@ -59,15 +59,6 @@ section{position:relative;z-index:1;}
 .stat-num{font-family:var(--display);font-weight:900;font-size:1.9rem;color:var(--cyan);text-shadow:0 0 12px var(--cyan);line-height:1;}
 .stat-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray);margin-top:.3rem;}
 
-/* HERO IMAGE */
-.hero-img-wrap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:320px;height:320px;z-index:1;pointer-events:none;}
-.hero-img-wrap img{width:100%;height:100%;object-fit:cover;opacity:0.55;filter:saturate(0.4) hue-rotate(160deg);}
-.hero-img-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;border:1px solid rgba(0,200,255,0.1);background:rgba(4,13,26,0.5);}
-.hero-img-placeholder .ph-icon{font-size:2.5rem;opacity:0.25;}
-.hero-img-placeholder .ph-text{font-family:var(--mono);font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(0,200,255,0.25);text-align:center;line-height:1.9;}
-.hero-img-wrap::before,.hero-img-wrap::after{content:'';position:absolute;width:16px;height:16px;border-color:rgba(0,200,255,0.3);border-style:solid;}
-.hero-img-wrap::before{top:0;left:0;border-width:2px 0 0 2px;}
-.hero-img-wrap::after{bottom:0;right:0;border-width:0 2px 2px 0;}
 
 /* TECNOLOGÍA */
 #tecnologia{padding:100px 0;background:var(--deep);border-top:1px solid rgba(0,200,255,0.07);}
@@ -150,7 +141,6 @@ footer{background:var(--black);border-top:1px solid rgba(0,200,255,.08);padding:
   .tech-grid,.visual-inner,.cnt-grid{grid-template-columns:1fr;}
   .casos-grid{grid-template-columns:1fr 1fr;}
   .hero-stats{display:none;}
-  .hero-img-wrap{display:none;}
   .cta-in{flex-direction:column;}
   .f-row{grid-template-columns:1fr;}
 }
@@ -195,12 +185,6 @@ footer{background:var(--black);border-top:1px solid rgba(0,200,255,.08);padding:
     </div>
   </div>
 
-  <div class="hero-img-wrap" id="heroImgWrap">
-    <div class="hero-img-placeholder" id="heroPlaceholder">
-      <span class="ph-icon">&#x1F5BC;</span>
-      <span class="ph-text">// IMAGEN DEL HERO //<br>cambiar HERO_IMAGE<br>en el script</span>
-    </div>
-  </div>
 
   <div class="hero-stats">
     <div class="stat-card">
@@ -380,7 +364,7 @@ footer{background:var(--black);border-top:1px solid rgba(0,200,255,.08);padding:
         </div>
         <div class="cnt-detail">
           <span class="cnt-detail-icon">&#x2709;</span>
-          <div><label>EMAIL</label><span>contacto@bereniceai.com</span></div>
+          <div><label>EMAIL</label><span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="35565a5b415456415a75575047505b5c5650545c1b565a58">[email&#160;protected]</a></span></div>
         </div>
         <div class="cnt-detail">
           <span class="cnt-detail-icon">&#x1F4DE;</span>
@@ -448,24 +432,7 @@ footer{background:var(--black);border-top:1px solid rgba(0,200,255,.08);padding:
   </div>
 </footer>
 
-<script>
-// ============================================================
-//  IMAGEN CENTRAL DEL HERO
-//  Cambiá null por el nombre de tu archivo, ej: 'imagen-camion1.jpg'
-// ============================================================
-var HERO_IMAGE ='imagen-hero.png' ;
-
-if (HERO_IMAGE) {
-  var wrap = document.getElementById('heroImgWrap');
-  var ph = document.getElementById('heroPlaceholder');
-  var img = document.createElement('img');
-  img.src = HERO_IMAGE;
-  img.alt = 'Traxion';
-  img.onerror = function() { img.remove(); ph.style.display = 'flex'; };
-  ph.style.display = 'none';
-  wrap.appendChild(img);
-}
-
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // Reveal on scroll
 var revealEls = document.querySelectorAll('.reveal');
 var observer = new IntersectionObserver(function(entries) {
