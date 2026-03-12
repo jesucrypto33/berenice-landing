@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://berenice-backend-production.up.railway.app; img-src 'self' data: blob: https:;">
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>TRAXION — Optimización Logística Global | Berenice AI</title>
@@ -14,6 +13,8 @@ html{scroll-behavior:smooth;}
 body{font-family:var(--body);background:var(--black);color:var(--white);overflow-x:hidden;}
 a{text-decoration:none;color:inherit;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,200,255,0.022) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,255,0.022) 1px,transparent 1px);background-size:60px 60px;}
+
+/* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:0 3rem;height:68px;background:rgba(2,4,8,0.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,200,255,0.1);}
 .nav-brand{display:flex;align-items:center;gap:0.7rem;flex-shrink:0;}
 .nav-brand-text{font-family:var(--display);font-weight:900;font-size:1rem;letter-spacing:0.1em;}
@@ -22,6 +23,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:cen
 .nav-back:hover{color:var(--cyan);}
 .nav-cta{font-family:var(--display);font-weight:700;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.5rem 1.3rem;color:var(--cyan);border:1px solid rgba(0,200,255,0.45);background:transparent;cursor:pointer;transition:background 0.2s,box-shadow 0.2s;}
 .nav-cta:hover{background:rgba(0,200,255,0.07);box-shadow:0 0 14px rgba(0,200,255,0.18);}
+
+/* UTILS */
 section{position:relative;z-index:1;}
 .container{max-width:1200px;margin:0 auto;padding:0 3rem;}
 .sec-tag{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--cyan2);margin-bottom:.6rem;display:flex;align-items:center;gap:.6rem;}
@@ -41,10 +44,10 @@ section{position:relative;z-index:1;}
 .corner::before,.corner::after{content:'';position:absolute;background:rgba(0,200,255,0.3);}
 .corner::before{width:2px;height:100%;}.corner::after{width:100%;height:2px;}
 .c-tl{top:22px;left:22px;}.c-tr{top:22px;right:22px;transform:scaleX(-1);}.c-bl{bottom:22px;left:22px;transform:scaleY(-1);}.c-br{bottom:22px;right:22px;transform:scale(-1);}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.15;}}
 .hero-tag{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.16em;color:var(--cyan2);margin-bottom:1.2rem;display:flex;align-items:center;gap:0.8rem;}
 .hero-tag::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:blink 2s infinite;flex-shrink:0;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:.15;}}
-.hero-content{max-width:640px;position:relative;z-index:2;}
+.hero-content{max-width:580px;position:relative;z-index:2;}
 .hero-icon{font-size:4rem;margin-bottom:1.2rem;display:block;}
 .hero-title{font-family:var(--display);font-weight:900;font-size:clamp(2.8rem,6vw,5.5rem);line-height:1.05;letter-spacing:0.03em;text-transform:uppercase;margin-bottom:0.4rem;color:var(--cyan);text-shadow:0 0 30px rgba(0,200,255,0.35);}
 .hero-subtitle{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(0,200,255,0.45);margin-bottom:1.8rem;}
@@ -55,6 +58,16 @@ section{position:relative;z-index:1;}
 .stat-card{background:rgba(4,13,26,0.88);border:1px solid rgba(0,200,255,0.1);border-left:2px solid var(--cyan);padding:1.1rem 1.6rem;min-width:175px;backdrop-filter:blur(8px);}
 .stat-num{font-family:var(--display);font-weight:900;font-size:1.9rem;color:var(--cyan);text-shadow:0 0 12px var(--cyan);line-height:1;}
 .stat-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray);margin-top:.3rem;}
+
+/* HERO IMAGE */
+.hero-img-wrap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:320px;height:320px;z-index:1;pointer-events:none;}
+.hero-img-wrap img{width:100%;height:100%;object-fit:cover;opacity:0.55;filter:saturate(0.4) hue-rotate(160deg);}
+.hero-img-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;border:1px solid rgba(0,200,255,0.1);background:rgba(4,13,26,0.5);}
+.hero-img-placeholder .ph-icon{font-size:2.5rem;opacity:0.25;}
+.hero-img-placeholder .ph-text{font-family:var(--mono);font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(0,200,255,0.25);text-align:center;line-height:1.9;}
+.hero-img-wrap::before,.hero-img-wrap::after{content:'';position:absolute;width:16px;height:16px;border-color:rgba(0,200,255,0.3);border-style:solid;}
+.hero-img-wrap::before{top:0;left:0;border-width:2px 0 0 2px;}
+.hero-img-wrap::after{bottom:0;right:0;border-width:0 2px 2px 0;}
 
 /* TECNOLOGÍA */
 #tecnologia{padding:100px 0;background:var(--deep);border-top:1px solid rgba(0,200,255,0.07);}
@@ -86,9 +99,6 @@ section{position:relative;z-index:1;}
 /* VISUAL */
 #visual{padding:80px 0;background:var(--deep);border-top:1px solid rgba(0,200,255,0.07);}
 .visual-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;}
-.visual-text h2{font-family:var(--display);font-weight:900;font-size:clamp(1.5rem,2.5vw,2.2rem);text-transform:uppercase;letter-spacing:.04em;line-height:1.1;}
-.visual-text h2 span{color:var(--cyan);}
-.visual-text p{color:rgba(200,225,255,0.45);font-size:.96rem;line-height:1.75;margin-top:1rem;max-width:480px;}
 .visual-imgs{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
 .visual-img{position:relative;overflow:hidden;border:1px solid rgba(0,200,255,0.08);}
 .visual-img img{width:100%;display:block;opacity:0.65;filter:saturate(0.5) hue-rotate(160deg);transition:opacity .3s;}
@@ -102,6 +112,25 @@ section{position:relative;z-index:1;}
 .cta-in h2 span{color:var(--cyan);}
 .cta-in p{color:rgba(200,225,255,.38);margin-top:.5rem;}
 
+/* CONTACTO */
+#contact{padding:100px 0;background:var(--deep);border-top:1px solid rgba(0,200,255,.06);}
+.cnt-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;}
+.cnt-title{font-family:var(--display);font-weight:900;font-size:.95rem;text-transform:uppercase;letter-spacing:.12em;color:var(--cyan);margin-bottom:.5rem;}
+.cnt-sub{color:rgba(200,225,255,.38);font-size:.88rem;margin-bottom:1.8rem;}
+.cnt-detail{display:flex;gap:.9rem;align-items:flex-start;margin-bottom:1.3rem;}
+.cnt-detail-icon{font-size:1rem;flex-shrink:0;}
+.cnt-detail label{display:block;font-family:var(--mono);font-size:.56rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gray);}
+.cnt-detail span{font-weight:600;font-size:.88rem;}
+.cnt-form{display:flex;flex-direction:column;gap:.9rem;}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;}
+.f-group{display:flex;flex-direction:column;gap:.35rem;}
+.f-group label{font-family:var(--mono);font-size:.56rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gray);}
+.f-group input,.f-group textarea,.f-group select{background:rgba(2,4,8,.95);border:1px solid rgba(0,200,255,.1);color:var(--white);padding:.75rem .95rem;font-family:var(--body);font-size:.93rem;outline:none;transition:border-color .2s;}
+.f-group input:focus,.f-group textarea:focus,.f-group select:focus{border-color:var(--cyan);}
+.f-group textarea{resize:vertical;min-height:105px;}
+.f-group select option{background:var(--black);}
+::placeholder{color:rgba(200,225,255,.16);}
+
 /* FOOTER */
 footer{background:var(--black);border-top:1px solid rgba(0,200,255,.08);padding:2.2rem 3rem;}
 .ft-line{height:1px;background:linear-gradient(90deg,transparent,rgba(0,200,255,.2),transparent);margin-bottom:2.2rem;}
@@ -113,10 +142,26 @@ footer{background:var(--black);border-top:1px solid rgba(0,200,255,.08);padding:
 .ft-links a{font-family:var(--mono);font-size:.58rem;color:var(--gray);letter-spacing:.12em;text-transform:uppercase;transition:color .2s;}
 .ft-links a:hover{color:var(--cyan);}
 .ft-copy{font-family:var(--mono);font-size:.58rem;color:rgba(74,106,138,.45);}
+
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease;}
 .reveal.visible{opacity:1;transform:translateY(0);}
-@media(max-width:960px){.tech-grid,.visual-inner{grid-template-columns:1fr;}.casos-grid{grid-template-columns:1fr 1fr;}.hero-stats{display:none;}.cta-in{flex-direction:column;}}
-@media(max-width:600px){.container{padding:0 1.5rem;}nav{padding:0 1.5rem;}#hero{padding:80px 1.5rem 60px;}.casos-grid{grid-template-columns:1fr;}.visual-imgs{grid-template-columns:1fr;}footer{padding:2rem 1.5rem;}}
+
+@media(max-width:960px){
+  .tech-grid,.visual-inner,.cnt-grid{grid-template-columns:1fr;}
+  .casos-grid{grid-template-columns:1fr 1fr;}
+  .hero-stats{display:none;}
+  .hero-img-wrap{display:none;}
+  .cta-in{flex-direction:column;}
+  .f-row{grid-template-columns:1fr;}
+}
+@media(max-width:600px){
+  .container{padding:0 1.5rem;}
+  nav{padding:0 1.5rem;}
+  #hero{padding:80px 1.5rem 60px;}
+  .casos-grid{grid-template-columns:1fr;}
+  .visual-imgs{grid-template-columns:1fr;}
+  footer{padding:2rem 1.5rem;}
+}
 </style>
 </head>
 <body>
@@ -126,30 +171,50 @@ footer{background:var(--black);border-top:1px solid rgba(0,200,255,.08);padding:
     <img src="logo.png" alt="Berenice AI" style="width:36px;height:36px;display:block;flex-shrink:0;"/>
     <div class="nav-brand-text">BERENICE<span>AI</span></div>
   </div>
-  <a href="index.html" class="nav-back">← VOLVER AL INICIO</a>
-  <a href="mailto:contact@bereniceai.com?subject=Demo%20TRAXION&body=Hola%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20TRAXION." class="nav-cta">[ CONSEGUIR DEMO ]</a>
+  <a href="index.html" class="nav-back">&#8592; VOLVER AL INICIO</a>
+  <a href="#contact" class="nav-cta">[ CONSEGUIR DEMO ]</a>
 </nav>
 
 <section id="hero">
   <div class="corner c-tl"></div><div class="corner c-tr"></div>
   <div class="corner c-bl"></div><div class="corner c-br"></div>
+
   <div class="hero-content">
     <div class="hero-tag">BERENICE AI &nbsp;// &nbsp;ECOSISTEMA &nbsp;// &nbsp;TRAXION</div>
-    <span class="hero-icon">🚛</span>
+    <span class="hero-icon">&#x1F69B;</span>
     <h1 class="hero-title">TRAXION</h1>
     <div class="hero-subtitle">Optimización Logística Global</div>
     <p class="hero-sub">
-      <strong>Berenice Traxion</strong> no optimiza una ruta aislada o un depósito puntual. Optimiza el <strong>sistema completo al mismo tiempo</strong>: rutas, flotas, inventarios, centros de distribución y planificación global. El cambio no es solo cuantitativo — es conceptual.
+      <strong>Berenice Traxion</strong> no optimiza una ruta aislada o un depósito puntual. Optimiza el
+      <strong>sistema completo al mismo tiempo</strong>: rutas, flotas, inventarios, centros de distribución
+      y planificación global. El cambio no es solo cuantitativo — es conceptual.
     </p>
     <div class="hero-btns">
-      <a href="mailto:contact@bereniceai.com?subject=Demo%20TRAXION&body=Hola%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20TRAXION." class="btn-primary">CONSEGUIR DEMO GRATIS</a>
+      <a href="#contact" class="btn-primary">CONSEGUIR DEMO GRATIS</a>
       <a href="index.html#ecosystem" class="btn-outline">VER ECOSISTEMA</a>
     </div>
   </div>
+
+  <div class="hero-img-wrap" id="heroImgWrap">
+    <div class="hero-img-placeholder" id="heroPlaceholder">
+      <span class="ph-icon">&#x1F5BC;</span>
+      <span class="ph-text">// IMAGEN DEL HERO //<br>cambiar HERO_IMAGE<br>en el script</span>
+    </div>
+  </div>
+
   <div class="hero-stats">
-    <div class="stat-card"><div class="stat-num">-38%</div><div class="stat-label">Costo logístico</div></div>
-    <div class="stat-card"><div class="stat-num">+91%</div><div class="stat-label">Eficiencia de flota</div></div>
-    <div class="stat-card"><div class="stat-num">Real</div><div class="stat-label">Tiempo real</div></div>
+    <div class="stat-card">
+      <div class="stat-num">-38%</div>
+      <div class="stat-label">Costo logístico</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">+91%</div>
+      <div class="stat-label">Eficiencia de flota</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">Real</div>
+      <div class="stat-label">Tiempo real</div>
+    </div>
   </div>
 </section>
 
@@ -164,21 +229,21 @@ footer{background:var(--black);border-top:1px solid rgba(0,200,255,.08);padding:
         </div>
         <div class="tech-list">
           <div class="tech-item">
-            <span class="tech-item-icon">🧩</span>
+            <span class="tech-item-icon">&#x1F9E9;</span>
             <div>
               <div class="tech-item-title">Campo Dinámico Autoorganizado</div>
               <p class="tech-item-text">El problema se transforma en un campo dinámico que se autoorganiza visualmente hasta encontrar la mejor solución. No es fuerza bruta — es convergencia estructural.</p>
             </div>
           </div>
           <div class="tech-item">
-            <span class="tech-item-icon">⚡</span>
+            <span class="tech-item-icon">&#x26A1;</span>
             <div>
               <div class="tech-item-title">La Solución Emerge Naturalmente</div>
               <p class="tech-item-text">En lugar de probar millones de combinaciones, el sistema permite que la solución emerja de forma natural. Problemas extremadamente complejos, resueltos rápido y eficientemente.</p>
             </div>
           </div>
           <div class="tech-item">
-            <span class="tech-item-icon">🌐</span>
+            <span class="tech-item-icon">&#x1F310;</span>
             <div>
               <div class="tech-item-title">Sistema Completo Integrado</div>
               <p class="tech-item-text">En vez de fragmentar el problema y ajustar partes, Traxion lo modela como una estructura integrada. Eso reduce costo estructural y aumenta rendimiento a medida que el sistema crece.</p>
@@ -207,42 +272,42 @@ footer{background:var(--black);border-top:1px solid rgba(0,200,255,.08);padding:
     <div class="casos-grid">
       <div class="caso-card reveal">
         <span class="caso-num">01</span>
-        <span class="caso-icon">🗺️</span>
+        <span class="caso-icon">&#x1F5FA;</span>
         <div class="caso-name">Optimización de Rutas</div>
         <p class="caso-desc">Traxion modela toda la red de distribución como una estructura integrada y converge hacia la configuración óptima global. Menos kilómetros, menos combustible, menos tiempo de entrega.</p>
         <div class="caso-tags"><span class="caso-tag">Rutas IA</span><span class="caso-tag">Flota</span></div>
       </div>
       <div class="caso-card reveal">
         <span class="caso-num">02</span>
-        <span class="caso-icon">📦</span>
+        <span class="caso-icon">&#x1F4E6;</span>
         <div class="caso-name">Gestión de Inventario</div>
         <p class="caso-desc">Predicción de demanda y reposición inteligente que evita tanto el exceso como la rotura de stock. El sistema aprende los patrones del negocio y ajusta niveles en cada nodo de la red.</p>
         <div class="caso-tags"><span class="caso-tag">Supply chain</span><span class="caso-tag">Predicción</span></div>
       </div>
       <div class="caso-card reveal">
         <span class="caso-num">03</span>
-        <span class="caso-icon">🏭</span>
+        <span class="caso-icon">&#x1F3ED;</span>
         <div class="caso-name">Centros de Distribución</div>
         <p class="caso-desc">Optimización de ubicación, capacidad y asignación de carga entre centros de distribución a nivel global. Decisiones estratégicas respaldadas por convergencia matemática.</p>
         <div class="caso-tags"><span class="caso-tag">Distribución</span><span class="caso-tag">Capacidad</span></div>
       </div>
       <div class="caso-card reveal">
         <span class="caso-num">04</span>
-        <span class="caso-icon">✈️</span>
+        <span class="caso-icon">&#x2708;</span>
         <div class="caso-name">Logística Multimodal</div>
         <p class="caso-desc">Integración de transporte aéreo, marítimo y terrestre en un único modelo optimizado. Traxion encuentra la combinación ideal de modos de transporte para cada tipo de carga.</p>
         <div class="caso-tags"><span class="caso-tag">Multimodal</span><span class="caso-tag">Aéreo</span></div>
       </div>
       <div class="caso-card reveal">
         <span class="caso-num">05</span>
-        <span class="caso-icon">🔮</span>
+        <span class="caso-icon">&#x1F52E;</span>
         <div class="caso-name">Planificación Global</div>
         <p class="caso-desc">Coordinación de operaciones a escala internacional considerando restricciones regulatorias, estacionalidad, capacidad y demanda proyectada de cada mercado.</p>
         <div class="caso-tags"><span class="caso-tag">Planificación</span><span class="caso-tag">Global</span></div>
       </div>
       <div class="caso-card reveal">
         <span class="caso-num">06</span>
-        <span class="caso-icon">⚙️</span>
+        <span class="caso-icon">&#x2699;</span>
         <div class="caso-name">Mantenimiento Predictivo</div>
         <p class="caso-desc">Monitoreo continuo del estado de la flota para anticipar fallas antes de que ocurran. Reducción de downtime no planificado y optimización de los ciclos de mantenimiento.</p>
         <div class="caso-tags"><span class="caso-tag">Predictivo</span><span class="caso-tag">Flota</span></div>
@@ -256,9 +321,13 @@ footer{background:var(--black);border-top:1px solid rgba(0,200,255,.08);padding:
     <div class="visual-inner">
       <div class="reveal">
         <h2 class="sec-title">La solución <span class="hl">emerge naturalmente</span> del sistema</h2>
-        <p style="color:rgba(200,225,255,0.45);font-size:.96rem;line-height:1.75;margin-top:1rem;max-width:480px;">En lugar de calcular ruta por ruta, Traxion trata el sistema logístico como una estructura integral y permite que su propia dinámica matemática lo lleve al estado óptimo. Donde hoy el mercado acepta aproximaciones, nosotros convergemos hacia la solución real.</p>
+        <p style="color:rgba(200,225,255,0.45);font-size:.96rem;line-height:1.75;margin-top:1rem;max-width:480px;">
+          En lugar de calcular ruta por ruta, Traxion trata el sistema logístico como una estructura integral
+          y permite que su propia dinámica matemática lo lleve al estado óptimo. Donde hoy el mercado acepta
+          aproximaciones, nosotros convergemos hacia la solución real.
+        </p>
         <div style="margin-top:2rem;">
-          <a href="mailto:contact@bereniceai.com?subject=Demo%20TRAXION&body=Hola%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20TRAXION." class="btn-primary">CONSEGUIR DEMO GRATIS</a>
+          <a href="#contact" class="btn-primary">CONSEGUIR DEMO GRATIS</a>
         </div>
       </div>
       <div class="visual-imgs reveal">
@@ -290,7 +359,75 @@ footer{background:var(--black);border-top:1px solid rgba(0,200,255,.08);padding:
         <h2>¿Listo para optimizar tu <span>cadena logística</span>?</h2>
         <p>Una demo de 30 minutos. Sin compromisos. Con datos de tu operación.</p>
       </div>
-      <a href="mailto:contact@bereniceai.com?subject=Demo%20TRAXION%20-%20Solicitud&body=Hola%2C%20me%20interesa%20obtener%20una%20demo%20gratuita%20de%20TRAXION.%0A%0ANombre%3A%0AEmpresa%3A%0ASector%3A%0A" class="btn-primary" style="font-size:.65rem;padding:1rem 2.5rem;white-space:nowrap;">CONSEGUIR DEMO GRATIS →</a>
+      <a href="#contact" class="btn-primary" style="font-size:.65rem;padding:1rem 2.5rem;white-space:nowrap;">CONSEGUIR DEMO GRATIS &#8594;</a>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-tag">CONTACTO</div>
+      <h2 class="sec-title">Hablemos de tu <span class="hl">proyecto</span></h2>
+    </div>
+    <div class="cnt-grid">
+      <div class="reveal">
+        <div class="cnt-title">TRAXION — BERENICE AI</div>
+        <p class="cnt-sub">Respondemos dentro de las próximas 24 horas hábiles.</p>
+        <div class="cnt-detail">
+          <span class="cnt-detail-icon">&#x1F4CD;</span>
+          <div><label>UBICACIÓN</label><span>Argentina</span></div>
+        </div>
+        <div class="cnt-detail">
+          <span class="cnt-detail-icon">&#x2709;</span>
+          <div><label>EMAIL</label><span>contacto@bereniceai.com</span></div>
+        </div>
+        <div class="cnt-detail">
+          <span class="cnt-detail-icon">&#x1F4DE;</span>
+          <div><label>TELÉFONO</label><span>+54 11-3856-6059</span></div>
+        </div>
+        <div class="cnt-detail" style="margin-top:2rem;padding:1.2rem;background:rgba(0,200,255,0.03);border:1px solid rgba(0,200,255,0.08);border-left:2px solid var(--cyan);">
+          <span class="cnt-detail-icon">&#x1F69B;</span>
+          <div>
+            <label>ESPECIALIDAD</label>
+            <span style="font-size:.82rem;color:rgba(200,225,255,0.5);line-height:1.6;display:block;margin-top:.3rem;">Optimización logística global, rutas inteligentes, gestión de flota y supply chain.</span>
+          </div>
+        </div>
+      </div>
+      <div class="cnt-form reveal">
+        <div class="f-row">
+          <div class="f-group">
+            <label>NOMBRE</label>
+            <input type="text" id="cnt-nombre" placeholder="Tu nombre" />
+          </div>
+          <div class="f-group">
+            <label>EMPRESA</label>
+            <input type="text" id="cnt-empresa" placeholder="Empresa S.A." />
+          </div>
+        </div>
+        <div class="f-group">
+          <label>EMAIL</label>
+          <input type="email" id="cnt-email" placeholder="tu@empresa.com" />
+        </div>
+        <div class="f-group">
+          <label>ÁREA DE INTERÉS</label>
+          <select id="cnt-area">
+            <option value="">Seleccioná una opción</option>
+            <option value="TRAXION" selected>TRAXION</option>
+            <option value="Optimización de Rutas">Optimización de Rutas</option>
+            <option value="Gestión de Inventario">Gestión de Inventario</option>
+            <option value="Logística Multimodal">Logística Multimodal</option>
+            <option value="Planificación Global">Planificación Global</option>
+            <option value="Mantenimiento Predictivo">Mantenimiento Predictivo</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="f-group">
+          <label>MENSAJE</label>
+          <textarea id="cnt-mensaje" placeholder="Describí tu desafío logístico o proyecto..."></textarea>
+        </div>
+        <button class="btn-primary" id="traxion-submit" style="border:none;cursor:pointer;align-self:flex-start;">ENVIAR MENSAJE &#8594;</button>
+      </div>
     </div>
   </div>
 </section>
@@ -299,7 +436,7 @@ footer{background:var(--black);border-top:1px solid rgba(0,200,255,.08);padding:
   <div class="ft-line"></div>
   <div class="ft-inner">
     <div class="ft-brand">
-      <img src="logo.png" alt="Berenice AI" style="width:28px;height:28px;display:block;"/>
+      <img src="logo.png" alt="Berenice AI" style="width:28px;height:28px;display:block;" />
       <div class="ft-brand-name">BERENICE<span>AI</span></div>
     </div>
     <ul class="ft-links">
@@ -307,16 +444,82 @@ footer{background:var(--black);border-top:1px solid rgba(0,200,255,.08);padding:
       <li><a href="index.html#ecosystem">Ecosistema</a></li>
       <li><a href="index.html#contact">Contacto</a></li>
     </ul>
-    <div class="ft-copy">© 2025 BERENICE AI — TRAXION MODULE</div>
+    <div class="ft-copy">&#169; 2025 BERENICE AI — TODOS LOS DERECHOS RESERVADOS</div>
   </div>
 </footer>
 
 <script>
-const reveals = document.querySelectorAll('.reveal');
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); }});
+// ============================================================
+//  IMAGEN CENTRAL DEL HERO
+//  Cambiá null por el nombre de tu archivo, ej: 'imagen-camion1.jpg'
+// ============================================================
+var HERO_IMAGE = null;
+
+if (HERO_IMAGE) {
+  var wrap = document.getElementById('heroImgWrap');
+  var ph = document.getElementById('heroPlaceholder');
+  var img = document.createElement('img');
+  img.src = HERO_IMAGE;
+  img.alt = 'Traxion';
+  img.onerror = function() { img.remove(); ph.style.display = 'flex'; };
+  ph.style.display = 'none';
+  wrap.appendChild(img);
+}
+
+// Reveal on scroll
+var revealEls = document.querySelectorAll('.reveal');
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
 }, { threshold: 0.12 });
-reveals.forEach(r => observer.observe(r));
+revealEls.forEach(function(el) { observer.observe(el); });
+
+// Formulario de contacto
+document.getElementById('traxion-submit').addEventListener('click', async function() {
+  var btn     = this;
+  var nombre  = document.getElementById('cnt-nombre').value.trim();
+  var empresa = document.getElementById('cnt-empresa').value.trim();
+  var email   = document.getElementById('cnt-email').value.trim();
+  var area    = document.getElementById('cnt-area').value;
+  var mensaje = document.getElementById('cnt-mensaje').value.trim();
+
+  if (!nombre || !email || !mensaje) {
+    alert('Por favor completá nombre, email y mensaje.');
+    return;
+  }
+
+  btn.textContent = 'ENVIANDO...';
+  btn.disabled = true;
+
+  try {
+    var res = await fetch('https://berenice-backend-production.up.railway.app/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombre: nombre, empresa: empresa, email: email, area: area, mensaje: mensaje })
+    });
+    var data = await res.json();
+    if (data.ok) {
+      btn.textContent = '✓ MENSAJE ENVIADO';
+      btn.style.background = '#00c87a';
+      document.getElementById('cnt-nombre').value = '';
+      document.getElementById('cnt-empresa').value = '';
+      document.getElementById('cnt-email').value = '';
+      document.getElementById('cnt-area').value = '';
+      document.getElementById('cnt-mensaje').value = '';
+    } else {
+      throw new Error(data.error || 'Error desconocido');
+    }
+  } catch(err) {
+    alert('Error: ' + err.message);
+    btn.textContent = 'ENVIAR MENSAJE →';
+    btn.disabled = false;
+  }
+});
 </script>
+
 </body>
 </html>
