@@ -109,7 +109,7 @@ section{position:relative;z-index:1;}
 .fuente-card{background:var(--deep);border:1px solid rgba(245,158,11,0.08);border-top:2px solid var(--yellow);overflow:hidden;transition:background .3s;}
 .fuente-card:hover{background:rgba(20,10,2,0.95);}
 .fuente-img{width:100%;height:200px;overflow:hidden;position:relative;background:rgba(7,20,40,0.8);}
-.fuente-img img{width:100%;height:100%;object-fit:cover;opacity:0.65;filter:saturate(0.5) hue-rotate(10deg);transition:opacity .3s;}
+.fuente-img img{width:100%;height:100%;object-fit:cover;opacity:0.65;transition:opacity .3s;}
 .fuente-card:hover .fuente-img img{opacity:0.85;}
 .fuente-img-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem;}
 .fuente-img-placeholder span{font-size:2.5rem;}
@@ -145,7 +145,7 @@ section{position:relative;z-index:1;}
 .stat-box-num{font-family:var(--display);font-weight:900;font-size:1.8rem;color:var(--yellow);text-shadow:0 0 14px rgba(245,158,11,0.3);line-height:1;}
 .stat-box-label{font-family:var(--mono);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);margin-top:.4rem;}
 .impacto-img{position:relative;border:1px solid rgba(245,158,11,0.1);overflow:hidden;}
-.impacto-img img{width:100%;display:block;opacity:0.65;filter:saturate(0.5) hue-rotate(10deg);transition:opacity .3s;}
+.impacto-img img{width:100%;display:block;opacity:0.65;transition:opacity .3s;}
 .impacto-img:hover img{opacity:0.85;}
 .impacto-img-placeholder{height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;background:rgba(7,20,40,0.6);}
 .impacto-img-placeholder span{font-size:3rem;}
@@ -332,11 +332,7 @@ footer{background:var(--black);border-top:1px solid rgba(245,158,11,.08);padding
     <div class="fuentes-grid">
       <div class="fuente-card reveal">
         <div class="fuente-img">
-          <!-- REEMPLAZAR CON: <img src="imagen-solar.jpg" alt="Energía Solar"/> -->
-          <div class="fuente-img-placeholder">
-            <span>&#x1F31E;</span>
-            <p>imagen-solar.jpg</p>
-          </div>
+          <img src="imagen-solar.jpg" alt="Energía Solar"/>
         </div>
         <div class="fuente-body">
           <span class="fuente-tag">// 01 — RENOVABLE</span>
@@ -350,11 +346,7 @@ footer{background:var(--black);border-top:1px solid rgba(245,158,11,.08);padding
       </div>
       <div class="fuente-card reveal">
         <div class="fuente-img">
-          <!-- REEMPLAZAR CON: <img src="imagen-eolica.jpg" alt="Energía Eólica"/> -->
-          <div class="fuente-img-placeholder">
-            <span>&#x1F32C;</span>
-            <p>imagen-eolica.jpg</p>
-          </div>
+          <img src="imagen-eolica.jpg" alt="Energía Eólica"/>
         </div>
         <div class="fuente-body">
           <span class="fuente-tag">// 02 — RENOVABLE</span>
@@ -368,11 +360,7 @@ footer{background:var(--black);border-top:1px solid rgba(245,158,11,.08);padding
       </div>
       <div class="fuente-card reveal">
         <div class="fuente-img">
-          <!-- REEMPLAZAR CON: <img src="imagen-nuclear.jpg" alt="Energía Nuclear"/> -->
-          <div class="fuente-img-placeholder">
-            <span>&#x2622;</span>
-            <p>imagen-nuclear.jpg</p>
-          </div>
+          <img src="imagen-nuclear.jpg" alt="Energía Nuclear"/>
         </div>
         <div class="fuente-body">
           <span class="fuente-tag">// 03 — BASE</span>
@@ -386,11 +374,7 @@ footer{background:var(--black);border-top:1px solid rgba(245,158,11,.08);padding
       </div>
       <div class="fuente-card reveal">
         <div class="fuente-img">
-          <!-- REEMPLAZAR CON: <img src="imagen-petroleo.jpg" alt="Industria Petrolera"/> -->
-          <div class="fuente-img-placeholder">
-            <span>&#x1F6E2;</span>
-            <p>imagen-petroleo.jpg</p>
-          </div>
+          <img src="imagen-petroleo.jpg" alt="Industria Petrolera"/>
         </div>
         <div class="fuente-body">
           <span class="fuente-tag">// 04 — FÓSIL</span>
@@ -469,11 +453,7 @@ footer{background:var(--black);border-top:1px solid rgba(245,158,11,.08);padding
       </div>
       <div class="reveal">
         <div class="impacto-img">
-          <!-- REEMPLAZAR CON: <img src="imagen-red-energia.jpg" alt="Red energética"/> -->
-          <div class="impacto-img-placeholder">
-            <span>&#x26A1;</span>
-            <p>imagen-red-energia.jpg</p>
-          </div>
+          <img src="imagen-red-energia.jpg" alt="Red energética"/>
           <div class="img-label">// Red de distribución optimizada en tiempo real</div>
         </div>
       </div>
