@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>OPTIMIZACIÓN DE ENERGÍAS | Berenice AI</title>
+<link rel="icon" href="/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --black:#020408;--deep:#040d1a;--navy:#071428;
+  --cyan:#00c8ff;--white:#e8f4ff;--gray:#4a6a8a;
+  --yellow:#f59e0b;--yellow2:#d97706;--yellow3:#78350f;--yellowglow:rgba(245,158,11,0.28);
+  --display:'Orbitron',sans-serif;--body:'Rajdhani',sans-serif;--mono:'Share Tech Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--body);background:var(--black);color:var(--white);overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(245,158,11,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(245,158,11,0.018) 1px,transparent 1px);
+  background-size:60px 60px;}
+
+/* RAYOS ANIMADOS */
+.bolt{position:absolute;pointer-events:none;opacity:0;z-index:0;}
+.bolt svg{display:block;}
+@keyframes bolt-flash{0%{opacity:0;}5%{opacity:.55;}10%{opacity:.1;}15%{opacity:.5;}20%{opacity:0;}100%{opacity:0;}}
+.bolt-1{top:12%;left:18%;animation:bolt-flash 7s ease-in-out infinite;}
+.bolt-2{top:30%;right:14%;animation:bolt-flash 11s ease-in-out 2s infinite;}
+.bolt-3{bottom:20%;left:10%;animation:bolt-flash 9s ease-in-out 4s infinite;}
+.bolt-4{top:55%;right:22%;animation:bolt-flash 13s ease-in-out 1s infinite;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:0 3rem;height:68px;background:rgba(2,4,8,0.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(245,158,11,0.12);}
+.nav-brand{display:flex;align-items:center;gap:0.7rem;flex-shrink:0;}
+.nav-brand-text{font-family:var(--display);font-weight:900;font-size:1rem;letter-spacing:0.1em;}
+.nav-brand-text span{color:var(--cyan);}
+.nav-back{font-family:var(--display);font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(180,210,240,0.65);display:flex;align-items:center;gap:0.5rem;transition:color 0.2s;}
+.nav-back:hover{color:var(--yellow);}
+.nav-tag{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(245,158,11,0.5);border:1px solid rgba(245,158,11,0.2);padding:0.4rem 1rem;}
+
+/* UTILS */
+section{position:relative;z-index:1;}
+.container{max-width:1200px;margin:0 auto;padding:0 3rem;}
+.sec-tag{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(245,158,11,0.6);margin-bottom:.6rem;display:flex;align-items:center;gap:.6rem;}
+.sec-tag::before{content:'//';color:rgba(245,158,11,0.3);}
+.sec-title{font-family:var(--display);font-weight:900;font-size:clamp(1.7rem,3.2vw,2.6rem);text-transform:uppercase;letter-spacing:0.04em;line-height:1.06;}
+.sec-title .hl{color:var(--yellow);text-shadow:0 0 18px rgba(245,158,11,0.35);}
+.sec-desc{font-size:.96rem;font-weight:500;color:rgba(200,225,255,0.43);line-height:1.75;max-width:560px;margin-top:.9rem;}
+.sec-head{margin-bottom:3rem;}
+.btn-outline-y{font-family:var(--display);font-weight:600;font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;padding:0.85rem 2rem;background:transparent;color:var(--yellow);border:1px solid rgba(245,158,11,0.4);cursor:pointer;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));transition:border-color 0.2s,box-shadow 0.2s,transform 0.15s;display:inline-block;}
+.btn-outline-y:hover{border-color:var(--yellow);box-shadow:0 0 18px rgba(245,158,11,0.25);transform:translateY(-2px);}
+.btn-outline{font-family:var(--display);font-weight:600;font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;padding:0.85rem 2rem;background:transparent;color:var(--cyan);border:1px solid rgba(0,200,255,0.35);cursor:pointer;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));transition:border-color 0.2s,box-shadow 0.2s,transform 0.15s;display:inline-block;}
+.btn-outline:hover{border-color:var(--cyan);box-shadow:0 0 14px rgba(0,200,255,0.18);transform:translateY(-2px);}
+
+/* HERO */
+#hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:136px 3rem 80px;
+  background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(120,53,15,0.2) 0%,rgba(0,20,40,0.08) 55%,var(--black) 80%);overflow:hidden;}
+.corner{position:absolute;width:55px;height:55px;}
+.corner::before,.corner::after{content:'';position:absolute;background:rgba(245,158,11,0.22);}
+.corner::before{width:2px;height:100%;}.corner::after{width:100%;height:2px;}
+.c-tl{top:22px;left:22px;}.c-tr{top:22px;right:22px;transform:scaleX(-1);}
+.c-bl{bottom:22px;left:22px;transform:scaleY(-1);}.c-br{bottom:22px;right:22px;transform:scale(-1);}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.15;}}
+.hero-tag{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.16em;color:rgba(245,158,11,0.6);margin-bottom:1.2rem;display:flex;align-items:center;gap:0.8rem;}
+.hero-tag::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--yellow);box-shadow:0 0 8px var(--yellow);animation:blink 2.5s infinite;flex-shrink:0;}
+.hero-content{max-width:640px;position:relative;z-index:2;}
+.hero-icon{font-size:4rem;margin-bottom:1.2rem;display:block;}
+.hero-title{font-family:var(--display);font-weight:900;font-size:clamp(2rem,5vw,4.2rem);line-height:1.05;letter-spacing:0.03em;text-transform:uppercase;margin-bottom:0.4rem;color:var(--yellow);text-shadow:0 0 35px rgba(245,158,11,0.4);}
+.hero-subtitle{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(245,158,11,0.45);margin-bottom:1.8rem;}
+.hero-sub{font-size:1rem;font-weight:500;color:rgba(200,225,255,0.5);max-width:560px;line-height:1.85;margin-bottom:2.5rem;padding-left:1rem;border-left:2px solid rgba(245,158,11,0.4);}
+.hero-sub strong{color:var(--white);}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;}
+.hero-badge{position:absolute;right:3rem;top:50%;transform:translateY(-50%);z-index:2;display:flex;flex-direction:column;gap:2px;}
+.badge-card{background:rgba(4,13,26,0.88);border:1px solid rgba(245,158,11,0.1);border-left:2px solid var(--yellow);padding:1.1rem 1.6rem;min-width:185px;backdrop-filter:blur(8px);}
+.badge-icon{font-size:1.5rem;margin-bottom:.4rem;display:block;}
+.badge-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray);margin-top:.2rem;}
+.badge-val{font-family:var(--display);font-weight:700;font-size:.78rem;color:var(--yellow);letter-spacing:.06em;}
+
+/* ENFOQUE */
+#enfoque{padding:100px 0;background:var(--deep);border-top:1px solid rgba(245,158,11,0.08);}
+.enfoque-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;}
+.energy-visual{position:relative;display:flex;align-items:center;justify-content:center;height:360px;}
+.e-ring{position:absolute;border-radius:50%;}
+.e-ring:nth-child(1){width:300px;height:300px;border:1px solid rgba(245,158,11,0.1);animation:spin 30s linear infinite;}
+.e-ring:nth-child(2){width:210px;height:210px;border:1px solid rgba(245,158,11,0.16);animation:spin 18s linear infinite reverse;}
+.e-ring:nth-child(3){width:120px;height:120px;border:1px solid rgba(245,158,11,0.22);animation:spin 10s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.e-center{width:64px;height:64px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,0.5),rgba(120,53,15,0.2));border:1px solid rgba(245,158,11,0.5);display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 0 28px rgba(245,158,11,0.35);position:relative;z-index:2;}
+.e-dot{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--yellow);box-shadow:0 0 6px var(--yellow);}
+.e-dot:nth-child(4){top:0;left:50%;transform:translate(-50%,-50%);}
+.e-dot:nth-child(5){bottom:0;left:50%;transform:translate(-50%,50%);}
+.e-dot:nth-child(6){left:0;top:50%;transform:translate(-50%,-50%);}
+.e-dot:nth-child(7){right:0;top:50%;transform:translate(50%,-50%);}
+.e-dot-sm{position:absolute;width:5px;height:5px;border-radius:50%;background:rgba(245,158,11,0.4);}
+.e-dot-sm:nth-child(1){top:18%;right:13%;}
+.e-dot-sm:nth-child(2){bottom:22%;left:11%;}
+.e-dot-sm:nth-child(3){top:33%;left:8%;}
+.enfoque-list{display:flex;flex-direction:column;gap:1.4rem;margin-top:2rem;}
+.enfoque-item{display:flex;align-items:flex-start;gap:1.1rem;padding:1.3rem 1.5rem;background:rgba(7,20,40,0.7);border:1px solid rgba(245,158,11,0.07);border-left:2px solid var(--yellow);transition:background .25s;}
+.enfoque-item:hover{background:rgba(30,15,2,0.85);}
+.enfoque-item-icon{font-size:1.4rem;flex-shrink:0;}
+.enfoque-item-title{font-family:var(--display);font-weight:700;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--yellow);margin-bottom:.25rem;}
+.enfoque-item-text{font-size:.86rem;color:rgba(200,225,255,0.48);line-height:1.55;}
+
+/* FUENTES */
+#fuentes{padding:100px 0;background:var(--black);border-top:1px solid rgba(245,158,11,0.06);}
+.fuentes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;margin-top:3rem;}
+.fuente-card{background:var(--deep);border:1px solid rgba(245,158,11,0.08);border-top:2px solid var(--yellow);overflow:hidden;transition:background .3s;}
+.fuente-card:hover{background:rgba(20,10,2,0.95);}
+.fuente-img{width:100%;height:200px;overflow:hidden;position:relative;background:rgba(7,20,40,0.8);}
+.fuente-img img{width:100%;height:100%;object-fit:cover;opacity:0.65;filter:saturate(0.5) hue-rotate(10deg);transition:opacity .3s;}
+.fuente-card:hover .fuente-img img{opacity:0.85;}
+.fuente-img-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem;}
+.fuente-img-placeholder span{font-size:2.5rem;}
+.fuente-img-placeholder p{font-family:var(--mono);font-size:.52rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(245,158,11,0.25);}
+.fuente-body{padding:1.8rem;}
+.fuente-tag{font-family:var(--mono);font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,158,11,.45);margin-bottom:.7rem;display:block;}
+.fuente-name{font-family:var(--display);font-weight:900;font-size:1rem;text-transform:uppercase;letter-spacing:.06em;color:var(--yellow);margin-bottom:.6rem;}
+.fuente-desc{font-size:.88rem;color:rgba(200,225,255,.42);line-height:1.65;}
+.fuente-stats{display:flex;gap:1.5rem;margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid rgba(245,158,11,.08);}
+.fuente-stat-num{font-family:var(--display);font-weight:900;font-size:1.1rem;color:var(--yellow);}
+.fuente-stat-label{font-family:var(--mono);font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-top:.15rem;}
+
+/* CAPACIDADES */
+#capacidades{padding:100px 0;background:var(--deep);border-top:1px solid rgba(245,158,11,0.07);}
+.cap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(245,158,11,0.06);margin-top:3rem;}
+.cap-card{background:var(--deep);padding:2.4rem;position:relative;overflow:hidden;transition:background .3s;}
+.cap-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--yellow),transparent);transform:scaleX(0);transition:transform .4s;}
+.cap-card:hover{background:rgba(20,10,2,0.95);}.cap-card:hover::before{transform:scaleX(1);}
+.cap-num{font-family:var(--mono);font-size:0.58rem;letter-spacing:.2em;color:rgba(245,158,11,.22);margin-bottom:.9rem;display:block;}
+.cap-icon{font-size:1.8rem;margin-bottom:.9rem;display:block;}
+.cap-name{font-family:var(--display);font-weight:700;font-size:.85rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.7rem;}
+.cap-desc{font-size:.85rem;color:rgba(200,225,255,.42);line-height:1.62;}
+.cap-tag{display:inline-block;margin-top:1.2rem;font-family:var(--mono);font-size:.55rem;letter-spacing:.1em;padding:.25rem .7rem;border:1px solid rgba(245,158,11,.18);color:rgba(245,158,11,.5);text-transform:uppercase;}
+
+/* IMPACTO */
+#impacto{padding:90px 0;background:var(--black);border-top:1px solid rgba(245,158,11,0.07);}
+.impacto-inner{display:grid;grid-template-columns:1fr 1.1fr;gap:5rem;align-items:center;}
+.impacto-quote{font-family:var(--display);font-weight:900;font-size:clamp(1.4rem,2.5vw,2rem);text-transform:uppercase;letter-spacing:.04em;line-height:1.15;color:var(--white);margin-bottom:1.8rem;}
+.impacto-quote span{color:var(--yellow);}
+.impacto-body{font-size:.96rem;color:rgba(200,225,255,.45);line-height:1.8;margin-bottom:1.4rem;}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(245,158,11,0.08);margin-top:2.5rem;}
+.stat-box{background:var(--black);padding:1.6rem 1.2rem;text-align:center;}
+.stat-box-num{font-family:var(--display);font-weight:900;font-size:1.8rem;color:var(--yellow);text-shadow:0 0 14px rgba(245,158,11,0.3);line-height:1;}
+.stat-box-label{font-family:var(--mono);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);margin-top:.4rem;}
+.impacto-img{position:relative;border:1px solid rgba(245,158,11,0.1);overflow:hidden;}
+.impacto-img img{width:100%;display:block;opacity:0.65;filter:saturate(0.5) hue-rotate(10deg);transition:opacity .3s;}
+.impacto-img:hover img{opacity:0.85;}
+.impacto-img-placeholder{height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;background:rgba(7,20,40,0.6);}
+.impacto-img-placeholder span{font-size:3rem;}
+.impacto-img-placeholder p{font-family:var(--mono);font-size:.52rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(245,158,11,0.22);}
+.img-label{position:absolute;bottom:0;left:0;right:0;padding:.5rem 1rem;background:rgba(2,4,8,0.85);font-family:var(--mono);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,158,11,0.4);border-top:1px solid rgba(245,158,11,0.08);}
+
+/* CONTACTO */
+#contact{padding:100px 0;background:var(--deep);border-top:1px solid rgba(245,158,11,.06);}
+.cnt-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;}
+.cnt-title{font-family:var(--display);font-weight:900;font-size:.95rem;text-transform:uppercase;letter-spacing:.12em;color:var(--yellow);margin-bottom:.5rem;}
+.cnt-sub{color:rgba(200,225,255,.38);font-size:.88rem;margin-bottom:1.8rem;}
+.cnt-detail{display:flex;gap:.9rem;align-items:flex-start;margin-bottom:1.3rem;}
+.cnt-detail-icon{font-size:1rem;flex-shrink:0;}
+.cnt-detail label{display:block;font-family:var(--mono);font-size:.56rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gray);}
+.cnt-detail span{font-weight:600;font-size:.88rem;}
+.cnt-form{display:flex;flex-direction:column;gap:.9rem;}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;}
+.f-group{display:flex;flex-direction:column;gap:.35rem;}
+.f-group label{font-family:var(--mono);font-size:.56rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gray);}
+.f-group input,.f-group textarea,.f-group select{background:rgba(2,4,8,.95);border:1px solid rgba(245,158,11,.12);color:var(--white);padding:.75rem .95rem;font-family:var(--body);font-size:.93rem;outline:none;transition:border-color .2s;}
+.f-group input:focus,.f-group textarea:focus,.f-group select:focus{border-color:var(--yellow);}
+.f-group textarea{resize:vertical;min-height:105px;}
+.f-group select option{background:var(--black);}
+::placeholder{color:rgba(200,225,255,.16);}
+
+/* FOOTER */
+footer{background:var(--black);border-top:1px solid rgba(245,158,11,.08);padding:2.2rem 3rem;}
+.ft-line{height:1px;background:linear-gradient(90deg,transparent,rgba(245,158,11,.2),transparent);margin-bottom:2.2rem;}
+.ft-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+.ft-brand{display:flex;align-items:center;gap:.7rem;}
+.ft-brand-name{font-family:var(--display);font-weight:900;font-size:.95rem;letter-spacing:.1em;}
+.ft-brand-name span{color:var(--cyan);}
+.ft-links{display:flex;gap:2rem;list-style:none;}
+.ft-links a{font-family:var(--mono);font-size:.58rem;color:var(--gray);letter-spacing:.12em;text-transform:uppercase;transition:color .2s;}
+.ft-links a:hover{color:var(--yellow);}
+.ft-copy{font-family:var(--mono);font-size:.58rem;color:rgba(74,106,138,.45);}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+@media(max-width:960px){
+  .enfoque-grid,.impacto-inner,.cnt-grid{grid-template-columns:1fr;}
+  .energy-visual{height:240px;}.hero-badge{display:none;}
+  .fuentes-grid{grid-template-columns:1fr;}
+  .cap-grid{grid-template-columns:1fr 1fr;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .f-row{grid-template-columns:1fr;}
+}
+@media(max-width:600px){
+  .container{padding:0 1.5rem;}nav{padding:0 1.5rem;}
+  #hero{padding:80px 1.5rem 60px;}
+  .cap-grid{grid-template-columns:1fr;}
+  footer{padding:2rem 1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- RAYOS DECORATIVOS -->
+<div class="bolt bolt-1">
+  <svg width="40" height="80" viewBox="0 0 40 80"><polyline points="22,0 10,38 20,38 8,80" fill="none" stroke="rgba(245,158,11,0.6)" stroke-width="2" stroke-linejoin="round"/></svg>
+</div>
+<div class="bolt bolt-2">
+  <svg width="30" height="60" viewBox="0 0 30 60"><polyline points="18,0 8,28 15,28 6,60" fill="none" stroke="rgba(245,158,11,0.5)" stroke-width="1.5" stroke-linejoin="round"/></svg>
+</div>
+<div class="bolt bolt-3">
+  <svg width="35" height="70" viewBox="0 0 35 70"><polyline points="20,0 9,32 17,32 7,70" fill="none" stroke="rgba(245,158,11,0.55)" stroke-width="2" stroke-linejoin="round"/></svg>
+</div>
+<div class="bolt bolt-4">
+  <svg width="25" height="50" viewBox="0 0 25 50"><polyline points="14,0 6,22 12,22 4,50" fill="none" stroke="rgba(245,158,11,0.45)" stroke-width="1.5" stroke-linejoin="round"/></svg>
+</div>
+
+<nav>
+  <div class="nav-brand">
+    <img src="logo.png" alt="Berenice AI" style="width:36px;height:36px;display:block;flex-shrink:0;"/>
+    <div class="nav-brand-text">BERENICE<span>AI</span></div>
+  </div>
+  <a href="index.html" class="nav-back">&#8592; VOLVER AL INICIO</a>
+  <div class="nav-tag">// ENERGÍA</div>
+</nav>
+
+<section id="hero">
+  <div class="corner c-tl"></div><div class="corner c-tr"></div>
+  <div class="corner c-bl"></div><div class="corner c-br"></div>
+  <div class="hero-content">
+    <div class="hero-tag">BERENICE AI &nbsp;// &nbsp;ECOSISTEMA &nbsp;// &nbsp;ENERGÍAS</div>
+    <span class="hero-icon">&#x26A1;</span>
+    <h1 class="hero-title">OPTIMIZACIÓN<br>DE ENERGÍAS</h1>
+    <div class="hero-subtitle">Eólica · Solar · Nuclear · Petrolera</div>
+    <p class="hero-sub">
+      La generación y distribución de energía involucra sistemas de una
+      <strong>complejidad combinatoria enorme</strong>: miles de variables climáticas,
+      de demanda, de infraestructura y de costo interactuando en tiempo real.
+      Berenice optimiza el <strong>sistema completo</strong>, no una variable por vez.
+    </p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-outline-y">CONTACTAR AL EQUIPO</a>
+      <a href="index.html#ecosystem" class="btn-outline">VER ECOSISTEMA</a>
+    </div>
+  </div>
+  <div class="hero-badge">
+    <div class="badge-card">
+      <span class="badge-icon">&#x1F31E;</span>
+      <div class="badge-val">SOLAR</div>
+      <div class="badge-label">Generación fotovoltaica</div>
+    </div>
+    <div class="badge-card">
+      <span class="badge-icon">&#x1F32C;</span>
+      <div class="badge-val">EÓLICA</div>
+      <div class="badge-label">Parques y redes</div>
+    </div>
+    <div class="badge-card">
+      <span class="badge-icon">&#x2622;</span>
+      <div class="badge-val">NUCLEAR</div>
+      <div class="badge-label">Gestión de planta</div>
+    </div>
+    <div class="badge-card">
+      <span class="badge-icon">&#x1F6E2;</span>
+      <div class="badge-val">PETROLERA</div>
+      <div class="badge-label">Extracción y refinado</div>
+    </div>
+  </div>
+</section>
+
+<section id="enfoque">
+  <div class="container">
+    <div class="enfoque-grid">
+      <div class="reveal">
+        <div class="sec-head">
+          <div class="sec-tag">EL PROBLEMA</div>
+          <h2 class="sec-title">El sistema energético es <span class="hl">infinitamente complejo</span></h2>
+          <p class="sec-desc">La generación, distribución y almacenamiento de energía involucra millones de variables que cambian en tiempo real. Los enfoques tradicionales optimizan partes — Berenice optimiza el todo.</p>
+        </div>
+        <div class="enfoque-list">
+          <div class="enfoque-item">
+            <span class="enfoque-item-icon">&#x1F4CA;</span>
+            <div>
+              <div class="enfoque-item-title">Predicción de generación</div>
+              <p class="enfoque-item-text">Modelos que anticipan la producción eólica y solar considerando variables climáticas, estacionalidad y degradación de equipos. Reducción del error de forecast y mejor planificación de reservas.</p>
+            </div>
+          </div>
+          <div class="enfoque-item">
+            <span class="enfoque-item-icon">&#x26A1;</span>
+            <div>
+              <div class="enfoque-item-title">Balanceo de redes</div>
+              <p class="enfoque-item-text">Optimización en tiempo real del despacho de energía entre fuentes y nodos de distribución. Minimización de pérdidas, reducción de picos y estabilización de la frecuencia de red.</p>
+            </div>
+          </div>
+          <div class="enfoque-item">
+            <span class="enfoque-item-icon">&#x1F527;</span>
+            <div>
+              <div class="enfoque-item-title">Mantenimiento predictivo</div>
+              <p class="enfoque-item-text">Detección temprana de anomalías en turbinas, paneles, transformadores y equipos de planta. Reducción de downtime no planificado y extensión de vida útil de activos críticos.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="energy-visual">
+          <div class="e-ring"></div>
+          <div class="e-ring"></div>
+          <div class="e-ring"></div>
+          <div class="e-dot"></div>
+          <div class="e-dot"></div>
+          <div class="e-dot"></div>
+          <div class="e-dot"></div>
+          <div class="e-center">&#x26A1;</div>
+          <div class="e-dot-sm"></div>
+          <div class="e-dot-sm"></div>
+          <div class="e-dot-sm"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fuentes">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-tag">FUENTES DE ENERGÍA</div>
+      <h2 class="sec-title">Un motor para <span class="hl">cada fuente</span></h2>
+      <p class="sec-desc">El mismo principio de optimización aplicado a las características únicas de cada tipo de generación energética.</p>
+    </div>
+    <div class="fuentes-grid">
+      <div class="fuente-card reveal">
+        <div class="fuente-img">
+          <!-- REEMPLAZAR CON: <img src="imagen-solar.jpg" alt="Energía Solar"/> -->
+          <div class="fuente-img-placeholder">
+            <span>&#x1F31E;</span>
+            <p>// imagen-solar.jpg</p>
+          </div>
+        </div>
+        <div class="fuente-body">
+          <span class="fuente-tag">// 01 — RENOVABLE</span>
+          <div class="fuente-name">Energía Solar</div>
+          <p class="fuente-desc">Optimización de ángulo de paneles, limpieza predictiva y gestión de almacenamiento en baterías. Maximización del factor de capacidad considerando irradiación, temperatura y degradación de células fotovoltaicas.</p>
+          <div class="fuente-stats">
+            <div><div class="fuente-stat-num">+23%</div><div class="fuente-stat-label">Eficiencia media</div></div>
+            <div><div class="fuente-stat-num">-31%</div><div class="fuente-stat-label">Costo O&amp;M</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="fuente-card reveal">
+        <div class="fuente-img">
+          <!-- REEMPLAZAR CON: <img src="imagen-eolica.jpg" alt="Energía Eólica"/> -->
+          <div class="fuente-img-placeholder">
+            <span>&#x1F32C;</span>
+            <p>// imagen-eolica.jpg</p>
+          </div>
+        </div>
+        <div class="fuente-body">
+          <span class="fuente-tag">// 02 — RENOVABLE</span>
+          <div class="fuente-name">Energía Eólica</div>
+          <p class="fuente-desc">Control de pitch y yaw de turbinas en tiempo real según condiciones de viento. Optimización del layout de parques para minimizar el efecto estela entre aerogeneradores y maximizar la producción total.</p>
+          <div class="fuente-stats">
+            <div><div class="fuente-stat-num">+18%</div><div class="fuente-stat-label">Producción neta</div></div>
+            <div><div class="fuente-stat-num">-27%</div><div class="fuente-stat-label">Paradas no plan.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="fuente-card reveal">
+        <div class="fuente-img">
+          <!-- REEMPLAZAR CON: <img src="imagen-nuclear.jpg" alt="Energía Nuclear"/> -->
+          <div class="fuente-img-placeholder">
+            <span>&#x2622;</span>
+            <p>// imagen-nuclear.jpg</p>
+          </div>
+        </div>
+        <div class="fuente-body">
+          <span class="fuente-tag">// 03 — BASE</span>
+          <div class="fuente-name">Energía Nuclear</div>
+          <p class="fuente-desc">Optimización de ciclos de combustible, planificación de recargas y gestión térmica de reactores. Maximización del factor de disponibilidad y reducción de costos de operación manteniendo los más altos estándares de seguridad.</p>
+          <div class="fuente-stats">
+            <div><div class="fuente-stat-num">+8%</div><div class="fuente-stat-label">Factor carga</div></div>
+            <div><div class="fuente-stat-num">-19%</div><div class="fuente-stat-label">Costo combustible</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="fuente-card reveal">
+        <div class="fuente-img">
+          <!-- REEMPLAZAR CON: <img src="imagen-petroleo.jpg" alt="Industria Petrolera"/> -->
+          <div class="fuente-img-placeholder">
+            <span>&#x1F6E2;</span>
+            <p>// imagen-petroleo.jpg</p>
+          </div>
+        </div>
+        <div class="fuente-body">
+          <span class="fuente-tag">// 04 — FÓSIL</span>
+          <div class="fuente-name">Industria Petrolera</div>
+          <p class="fuente-desc">Optimización de rutas de extracción, scheduling de pozos y eficiencia en procesos de refinado. Reducción de flaring, minimización de consumo energético en bombeo y maximización del rendimiento de destilación.</p>
+          <div class="fuente-stats">
+            <div><div class="fuente-stat-num">-34%</div><div class="fuente-stat-label">Costo extracción</div></div>
+            <div><div class="fuente-stat-num">-41%</div><div class="fuente-stat-label">Emisiones flaring</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="capacidades">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-tag">CAPACIDADES</div>
+      <h2 class="sec-title">Qué puede hacer <span class="hl">el sistema</span></h2>
+      <p class="sec-desc">Más allá de cada fuente, Berenice Energy opera sobre la infraestructura energética como un sistema integrado.</p>
+    </div>
+    <div class="cap-grid">
+      <div class="cap-card reveal">
+        <span class="cap-num">01</span><span class="cap-icon">&#x1F4BB;</span>
+        <div class="cap-name">Gemelo Digital</div>
+        <p class="cap-desc">Modelo computacional en tiempo real de toda la planta o red. Permite simular escenarios, anticipar fallas y tomar decisiones operativas con respaldo cuantitativo antes de ejecutarlas.</p>
+        <span class="cap-tag">Simulación</span>
+      </div>
+      <div class="cap-card reveal">
+        <span class="cap-num">02</span><span class="cap-icon">&#x1F4C8;</span>
+        <div class="cap-name">Despacho Óptimo</div>
+        <p class="cap-desc">Algoritmos de despacho que minimizan el costo total de generación satisfaciendo la demanda en cada nodo. Considera restricciones de red, costos marginales y contratos de compra de energía simultáneamente.</p>
+        <span class="cap-tag">Optimización</span>
+      </div>
+      <div class="cap-card reveal">
+        <span class="cap-num">03</span><span class="cap-icon">&#x1F50B;</span>
+        <div class="cap-name">Gestión de Almacenamiento</div>
+        <p class="cap-desc">Estrategias de carga y descarga de baterías y sistemas de almacenamiento por bombeo. Arbitraje de precios en mercados eléctricos y respaldo de frecuencia en redes con alta penetración renovable.</p>
+        <span class="cap-tag">Storage</span>
+      </div>
+      <div class="cap-card reveal">
+        <span class="cap-num">04</span><span class="cap-icon">&#x1F321;</span>
+        <div class="cap-name">Forecasting Climático</div>
+        <p class="cap-desc">Integración de datos meteorológicos, satelitales y NWP para predicción de generación renovable con horizontes de hasta 72 horas. Reducción del error de forecast y mejor gestión de reservas.</p>
+        <span class="cap-tag">Predicción</span>
+      </div>
+      <div class="cap-card reveal">
+        <span class="cap-num">05</span><span class="cap-icon">&#x1F6E1;</span>
+        <div class="cap-name">Ciberseguridad OT</div>
+        <p class="cap-desc">Protección de sistemas SCADA, ICS y redes OT de infraestructura crítica energética. Monitoreo de anomalías en protocolos industriales y detección de intrusiones en entornos de operación en tiempo real.</p>
+        <span class="cap-tag">Seguridad</span>
+      </div>
+      <div class="cap-card reveal">
+        <span class="cap-num">06</span><span class="cap-icon">&#x1F30D;</span>
+        <div class="cap-name">Mercados de Carbono</div>
+        <p class="cap-desc">Cálculo y optimización de huella de carbono operativa. Estrategias de reducción de emisiones y participación en mercados de certificados verdes y bonos de carbono para maximizar el valor de la transición energética.</p>
+        <span class="cap-tag">ESG</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="impacto">
+  <div class="container">
+    <div class="impacto-inner">
+      <div class="reveal">
+        <div class="impacto-quote">Energía más limpia, más barata y más <span>confiable</span>.</div>
+        <p class="impacto-body">La transición energética no es solo un desafío tecnológico — es un problema de optimización a escala global. Más fuentes intermitentes, más complejidad en la red, más variables que gestionar en tiempo real.</p>
+        <p class="impacto-body">Berenice no reemplaza a los operadores. Les da la capacidad de tomar mejores decisiones más rápido, con respaldo cuantitativo y visión del sistema completo.</p>
+        <div class="stats-row">
+          <div class="stat-box"><div class="stat-box-num">-28%</div><div class="stat-box-label">Costo operativo medio</div></div>
+          <div class="stat-box"><div class="stat-box-num">+35%</div><div class="stat-box-label">Eficiencia de red</div></div>
+          <div class="stat-box"><div class="stat-box-num">-44%</div><div class="stat-box-label">Paradas no planificadas</div></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="impacto-img">
+          <!-- REEMPLAZAR CON: <img src="imagen-red-energia.jpg" alt="Red energética"/> -->
+          <div class="impacto-img-placeholder">
+            <span>&#x26A1;</span>
+            <p>// imagen-red-energia.jpg</p>
+          </div>
+          <div class="img-label">// Red de distribución optimizada en tiempo real</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="container">
+    <div class="sec-head reveal" style="text-align:center;max-width:600px;margin:0 auto 3rem;">
+      <div class="sec-tag" style="justify-content:center;">CONTACTO</div>
+      <h2 class="sec-title">Hablemos de tu <span class="hl">operación</span></h2>
+      <p class="sec-desc" style="max-width:100%;">Respondemos dentro de las próximas 24 horas hábiles.</p>
+    </div>
+    <div class="cnt-grid">
+      <div class="reveal">
+        <div class="cnt-title">ENERGÍAS — BERENICE AI</div>
+        <p class="cnt-sub">Si operás infraestructura energética de cualquier tipo y escala, podemos ayudarte a optimizarla.</p>
+        <div class="cnt-detail"><span class="cnt-detail-icon">&#x1F4CD;</span><div><label>UBICACIÓN</label><span>Argentina</span></div></div>
+        <div class="cnt-detail"><span class="cnt-detail-icon">&#x2709;</span><div><label>EMAIL</label><span>contact&#64;bereniceai&#46;com</span></div></div>
+        <div class="cnt-detail"><span class="cnt-detail-icon">&#x1F4DE;</span><div><label>TELÉFONO</label><span>+54 11-3856-6059</span></div></div>
+        <div class="cnt-detail" style="margin-top:2rem;padding:1.2rem;background:rgba(245,158,11,0.04);border:1px solid rgba(245,158,11,0.1);border-left:2px solid var(--yellow);">
+          <span class="cnt-detail-icon">&#x26A1;</span>
+          <div><label>ESPECIALIDAD</label><span style="font-size:.82rem;color:rgba(200,225,255,0.5);line-height:1.6;display:block;margin-top:.3rem;">Optimización de generación, distribución y mantenimiento en energía solar, eólica, nuclear y petrolera.</span></div>
+        </div>
+      </div>
+      <div class="cnt-form reveal">
+        <div class="f-row">
+          <div class="f-group"><label>NOMBRE</label><input type="text" id="cnt-nombre" placeholder="Tu nombre"/></div>
+          <div class="f-group"><label>EMPRESA</label><input type="text" id="cnt-empresa" placeholder="Empresa S.A."/></div>
+        </div>
+        <div class="f-group"><label>EMAIL</label><input type="email" id="cnt-email" placeholder="tu@empresa.com"/></div>
+        <div class="f-group">
+          <label>ÁREA DE INTERÉS</label>
+          <select id="cnt-area">
+            <option value="">Seleccioná una opción</option>
+            <option value="Energía Solar">Energía Solar</option>
+            <option value="Energía Eólica">Energía Eólica</option>
+            <option value="Energía Nuclear">Energía Nuclear</option>
+            <option value="Industria Petrolera">Industria Petrolera</option>
+            <option value="Redes de Distribución">Redes de Distribución</option>
+            <option value="Almacenamiento">Almacenamiento</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="f-group"><label>MENSAJE</label><textarea id="cnt-mensaje" placeholder="Contanos sobre tu operación, infraestructura o el desafío que querés resolver..."></textarea></div>
+        <button class="btn-outline-y" id="energia-submit" style="border-width:1px;cursor:pointer;align-self:flex-start;">ENVIAR MENSAJE &#8594;</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="ft-line"></div>
+  <div class="ft-inner">
+    <div class="ft-brand">
+      <img src="logo.png" alt="Berenice AI" style="width:28px;height:28px;display:block;"/>
+      <div class="ft-brand-name">BERENICE<span>AI</span></div>
+    </div>
+    <ul class="ft-links">
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="index.html#ecosystem">Ecosistema</a></li>
+      <li><a href="index.html#contact">Contacto</a></li>
+    </ul>
+    <div class="ft-copy">&#169; 2025 BERENICE AI — TODOS LOS DERECHOS RESERVADOS</div>
+  </div>
+</footer>
+
+<script>
+var revealEls = document.querySelectorAll('.reveal');
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+  });
+}, { threshold: 0.12 });
+revealEls.forEach(function(el) { observer.observe(el); });
+
+document.getElementById('energia-submit').addEventListener('click', async function() {
+  var btn     = this;
+  var nombre  = document.getElementById('cnt-nombre').value.trim();
+  var empresa = document.getElementById('cnt-empresa').value.trim();
+  var email   = document.getElementById('cnt-email').value.trim();
+  var area    = document.getElementById('cnt-area').value;
+  var mensaje = document.getElementById('cnt-mensaje').value.trim();
+  if (!nombre || !email || !mensaje) { alert('Por favor completá nombre, email y mensaje.'); return; }
+  btn.textContent = 'ENVIANDO...';
+  btn.disabled = true;
+  try {
+    var res = await fetch('https://berenice-backend-production.up.railway.app/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombre: nombre, empresa: empresa, email: email, area: area, mensaje: mensaje })
+    });
+    var data = await res.json();
+    if (data.ok) {
+      btn.textContent = '\u2713 MENSAJE ENVIADO';
+      btn.style.color = '#00c87a';
+      btn.style.borderColor = '#00c87a';
+      document.getElementById('cnt-nombre').value = '';
+      document.getElementById('cnt-empresa').value = '';
+      document.getElementById('cnt-email').value = '';
+      document.getElementById('cnt-area').value = '';
+      document.getElementById('cnt-mensaje').value = '';
+    } else {
+      throw new Error(data.error || 'Error desconocido');
+    }
+  } catch(err) {
+    alert('Error: ' + err.message);
+    btn.textContent = 'ENVIAR MENSAJE \u2192';
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
