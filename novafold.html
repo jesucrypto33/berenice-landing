@@ -196,6 +196,50 @@ footer{background:var(--black);border-top:1px solid rgba(168,85,247,.08);padding
   .dominios-grid{grid-template-columns:1fr;}
   footer{padding:2rem 1.5rem;}
 }
+
+/* TICKER */
+.seq-ticker{position:relative;width:100%;overflow:hidden;padding:0.55rem 0;background:rgba(168,85,247,0.04);border-top:1px solid rgba(168,85,247,0.1);border-bottom:1px solid rgba(168,85,247,0.1);margin:2.8rem 0 0;z-index:2;}
+.seq-ticker::before,.seq-ticker::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:3;pointer-events:none;}
+.seq-ticker::before{left:0;background:linear-gradient(90deg,var(--black),transparent);}
+.seq-ticker::after{right:0;background:linear-gradient(-90deg,var(--black),transparent);}
+.seq-ticker-label{position:absolute;left:0;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:0.52rem;letter-spacing:.2em;color:rgba(168,85,247,0.5);padding:0 1rem;z-index:4;background:var(--black);}
+.seq-track{display:flex;gap:2.5rem;white-space:nowrap;will-change:transform;}
+.seq-item{font-family:var(--mono);font-size:0.6rem;letter-spacing:.12em;color:rgba(168,85,247,0.35);display:flex;align-items:center;gap:.5rem;flex-shrink:0;}
+.seq-item .seq-code{color:rgba(0,200,255,0.55);transition:color .3s;}
+.seq-item .seq-name{color:rgba(168,85,247,0.3);}
+.seq-item.active .seq-code{color:var(--cyan);text-shadow:0 0 8px rgba(0,200,255,0.5);}
+.seq-sep{color:rgba(168,85,247,0.15);}
+
+/* PROTEIN SVG 3D */
+.concepto-visual{position:relative;display:flex;align-items:center;justify-content:center;height:480px;}
+#protein-svg{width:340px;height:340px;overflow:visible;}
+.prot-bond{stroke:rgba(168,85,247,0.25);stroke-width:1.5;transition:opacity .3s;}
+.prot-bond.front{stroke:rgba(168,85,247,0.5);stroke-width:2;}
+.prot-atom{transition:r .3s, opacity .3s;}
+.prot-atom.back{opacity:0.35;}
+.prot-atom.mid{opacity:0.65;}
+.prot-atom.front{opacity:1;}
+.prot-label{font-family:var(--mono);font-size:7px;fill:rgba(168,85,247,0.6);pointer-events:none;transition:opacity .3s;}
+.prot-label.front{fill:var(--cyan);opacity:1;}
+.prot-label.back{opacity:0.2;}
+.prot-glow{fill:radial-gradient(circle,rgba(168,85,247,0.3),transparent);}
+
+@media(max-width:960px){
+  #protein-svg{width:240px;height:240px;}
+}
+
+/* CANVAS HERO */
+#hero-canvas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:0;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 1.2s ease;
+}
+#hero-canvas.ready{ opacity:1; }
 </style>
 </head>
 <body>
@@ -210,6 +254,7 @@ footer{background:var(--black);border-top:1px solid rgba(168,85,247,.08);padding
 </nav>
 
 <section id="hero">
+  <canvas id="hero-canvas" aria-hidden="true"></canvas>
   <div class="corner c-tl"></div><div class="corner c-tr"></div>
   <div class="corner c-bl"></div><div class="corner c-br"></div>
 
@@ -228,6 +273,11 @@ footer{background:var(--black);border-top:1px solid rgba(168,85,247,.08);padding
     <div class="hero-btns">
       <a href="index.html#ecosystem" class="btn-outline-v">VER ECOSISTEMA</a>
       <a href="index.html#contact" class="btn-outline">CONTACTO</a>
+    </div>
+
+    <!-- TICKER DE SECUENCIAS -->
+    <div class="seq-ticker">
+      <div class="seq-track" id="seqTrack"></div>
     </div>
   </div>
 
@@ -285,17 +335,35 @@ footer{background:var(--black);border-top:1px solid rgba(168,85,247,.08);padding
       </div>
       <div class="reveal">
         <div class="concepto-visual">
-          <div class="mol-ring"></div>
-          <div class="mol-ring"></div>
-          <div class="mol-ring"></div>
-          <div class="mol-dot"></div>
-          <div class="mol-dot"></div>
-          <div class="mol-dot"></div>
-          <div class="mol-dot"></div>
-          <div class="mol-center">&#x1F9EC;</div>
-          <div class="mol-dot-sm"></div>
-          <div class="mol-dot-sm"></div>
-          <div class="mol-dot-sm"></div>
+          <svg id="dna-svg" viewBox="-160 -230 320 460" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;max-width:360px;overflow:visible;">
+            <defs>
+              <radialGradient id="dnaGradV" cx="35%" cy="30%">
+                <stop offset="0%" stop-color="#c084fc" stop-opacity="1"/>
+                <stop offset="100%" stop-color="#6d28d9" stop-opacity="0.7"/>
+              </radialGradient>
+              <radialGradient id="dnaGradC" cx="35%" cy="30%">
+                <stop offset="0%" stop-color="#38bdf8" stop-opacity="1"/>
+                <stop offset="100%" stop-color="#0369a1" stop-opacity="0.7"/>
+              </radialGradient>
+              <radialGradient id="dnaGradG" cx="35%" cy="30%">
+                <stop offset="0%" stop-color="#34d399" stop-opacity="1"/>
+                <stop offset="100%" stop-color="#065f46" stop-opacity="0.7"/>
+              </radialGradient>
+              <filter id="dnaGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="4" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="dnaGlowSoft" x="-80%" y="-80%" width="260%" height="260%">
+                <feGaussianBlur stdDeviation="8" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <g id="dna-rungs"></g>
+            <g id="dna-strand-b"></g>
+            <g id="dna-strand-a"></g>
+            <g id="dna-nodes-b"></g>
+            <g id="dna-nodes-a"></g>
+          </svg>
         </div>
       </div>
     </div>
@@ -555,6 +623,458 @@ document.getElementById('novafold-submit').addEventListener('click', async funct
     btn.disabled = false;
   }
 });
+</script>
+<!-- TICKER DE SECUENCIAS -->
+<script>
+(function(){
+  var sequences = [
+    {code:'MET-ALA-GLY',name:'Colágeno α1'},
+    {code:'GLU-LYS-ARG',name:'Hemoglobina'},
+    {code:'CYS-TRP-PHE',name:'Insulina B'},
+    {code:'ASP-HIS-SER',name:'Tripsina'},
+    {code:'PRO-VAL-ILE',name:'Miosina'},
+    {code:'THR-ASN-GLN',name:'Actina'},
+    {code:'TYR-LEU-ALA',name:'Fibronectina'},
+    {code:'ARG-PHE-LYS',name:'Ubiquitina'},
+    {code:'GLY-PRO-HYP',name:'NovaFold-v2'},
+    {code:'TRP-CYS-MET',name:'p53-mutante'},
+    {code:'SER-GLU-ASP',name:'PCNA'},
+    {code:'ILE-LEU-VAL',name:'Calmodulina'},
+  ];
+
+  var track = document.getElementById('seqTrack');
+  if(!track) return;
+
+  // duplicar para loop infinito
+  var items = sequences.concat(sequences);
+  var html = '';
+  items.forEach(function(s,i){
+    html += '<span class="seq-item" data-i="'+(i%sequences.length)+'">'
+      + '<span class="seq-sep">// </span>'
+      + '<span class="seq-code">'+s.code+'</span>'
+      + '<span class="seq-name"> ['+s.name+']</span>'
+      + '</span>';
+  });
+  track.innerHTML = html;
+
+  var pos = 0;
+  var speed = 0.45;
+  var totalW = 0;
+  var halfW = 0;
+
+  function measure(){
+    totalW = track.scrollWidth;
+    halfW = totalW / 2;
+  }
+  measure();
+  window.addEventListener('resize', measure);
+
+  var activeIdx = -1;
+  function updateActive(){
+    var idx = Math.floor((Math.abs(pos) / halfW) * sequences.length) % sequences.length;
+    if(idx !== activeIdx){
+      activeIdx = idx;
+      var els = track.querySelectorAll('.seq-item');
+      els.forEach(function(el){
+        el.classList.toggle('active', parseInt(el.dataset.i) === idx);
+      });
+    }
+  }
+
+  function tick(){
+    pos -= speed;
+    if(Math.abs(pos) >= halfW) pos = 0;
+    track.style.transform = 'translateX('+pos+'px)';
+    updateActive();
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+
+<!-- HÉLICE DE ADN DOBLE — SVG 3D -->
+<script>
+(function(){
+  var svg = document.getElementById('dna-svg');
+  if(!svg) return;
+
+  var gRungs   = document.getElementById('dna-rungs');
+  var gStrandB = document.getElementById('dna-strand-b');
+  var gStrandA = document.getElementById('dna-strand-a');
+  var gNodesB  = document.getElementById('dna-nodes-b');
+  var gNodesA  = document.getElementById('dna-nodes-a');
+
+  /* ── Parámetros de la hélice ─────────────────────────── */
+  var STEPS    = 28;        // pares de bases
+  var RADIUS   = 90;        // radio de la hélice
+  var HEIGHT   = 420;       // altura total
+  var TURNS    = 2.6;       // vueltas completas
+  var NODE_R   = 7;         // radio base de cada átomo
+  var ROT_SPD  = 0.006;     // velocidad de rotación Y
+  var TILT     = 0.22;      // inclinación X fija (radianes)
+
+  /* pares de bases: A-T (verde/violeta) y G-C (cyan/violeta) */
+  var BASE_PAIRS = ['AT','GC','AT','GC','GC','AT','GC','AT','AT','GC','GC','AT','GC','AT',
+                    'GC','AT','AT','GC','AT','GC','GC','AT','GC','AT','AT','GC','AT','GC'];
+
+  var colA  = 'url(#dnaGradV)';  // hilo A — violeta
+  var colB  = 'url(#dnaGradC)';  // hilo B — cyan
+  var colAT = 'url(#dnaGradG)';  // puente A-T — verde
+  var colGC = 'url(#dnaGradC)';  // puente G-C — cyan
+
+  /* ── Generar posiciones 3D ───────────────────────────── */
+  function getPositions(rotY){
+    var cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+    var cosX = Math.cos(TILT),  sinX = Math.sin(TILT);
+    var pts = [];
+    for(var i=0; i<STEPS; i++){
+      var t     = i / (STEPS - 1);
+      var angle = t * TURNS * 2 * Math.PI;
+      var yRaw  = (t - 0.5) * HEIGHT;
+
+      // Hilo A
+      var ax3 = Math.cos(angle) * RADIUS;
+      var az3 = Math.sin(angle) * RADIUS;
+      // Hilo B (opuesto, +PI)
+      var bx3 = Math.cos(angle + Math.PI) * RADIUS;
+      var bz3 = Math.sin(angle + Math.PI) * RADIUS;
+
+      function proj(x3, z3){
+        // rotación Y
+        var xr = x3 * cosY - z3 * sinY;
+        var zr = x3 * sinY + z3 * cosY;
+        // rotación X
+        var yr = yRaw * cosX - zr * sinX;
+        var zr2= yRaw * sinX + zr * cosX;
+        // perspectiva suave
+        var fov = 500;
+        var s   = fov / (fov + zr2 + 200);
+        return { sx: xr * s, sy: yr * s, sz: zr2, s: s };
+      }
+
+      pts.push({ a: proj(ax3, az3), b: proj(bx3, bz3), pair: BASE_PAIRS[i] });
+    }
+    return pts;
+  }
+
+  /* ── Crear elementos SVG de una vez ──────────────────── */
+  // Peldaños (rungs)
+  var rungEls = [];
+  for(var i=0; i<STEPS; i++){
+    var line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('stroke-linecap','round');
+    gRungs.appendChild(line);
+    rungEls.push(line);
+  }
+
+  // Segmentos de hebra (STEPS-1 segmentos por hebra)
+  var segAEls = [], segBEls = [];
+  for(var i=0; i<STEPS-1; i++){
+    var la = document.createElementNS('http://www.w3.org/2000/svg','line');
+    la.setAttribute('stroke-linecap','round');
+    gStrandA.appendChild(la);
+    segAEls.push(la);
+
+    var lb = document.createElementNS('http://www.w3.org/2000/svg','line');
+    lb.setAttribute('stroke-linecap','round');
+    gStrandB.appendChild(lb);
+    segBEls.push(lb);
+  }
+
+  // Nodos (círculos)
+  var nodeAEls = [], nodeBEls = [];
+  for(var i=0; i<STEPS; i++){
+    var ca = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    ca.setAttribute('filter','url(#dnaGlow)');
+    gNodesA.appendChild(ca);
+    nodeAEls.push(ca);
+
+    var cb = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    cb.setAttribute('filter','url(#dnaGlow)');
+    gNodesB.appendChild(cb);
+    nodeBEls.push(cb);
+  }
+
+  /* ── Animación ───────────────────────────────────────── */
+  var rotY = 0;
+
+  function render(){
+    rotY += ROT_SPD;
+    var pts = getPositions(rotY);
+
+    // Ordenar por Z promedio para z-sorting de peldaños
+    var rungOrder = pts.map(function(p,i){
+      return { i:i, z: (p.a.sz + p.b.sz) / 2 };
+    }).sort(function(a,b){ return a.z - b.z; });
+
+    // Reordenar peldaños en DOM para z-sorting
+    rungOrder.forEach(function(o){ gRungs.appendChild(rungEls[o.i]); });
+
+    // Actualizar peldaños
+    pts.forEach(function(p, i){
+      var el  = rungEls[i];
+      var avgZ = (p.a.sz + p.b.sz) / 2;
+      var front = avgZ > 30;
+      var mid   = avgZ > -30;
+      var alpha = front ? 0.75 : mid ? 0.4 : 0.15;
+      var w     = front ? 2.5  : mid ? 1.8 : 1.0;
+      var col   = p.pair === 'GC' ? '0,200,255' : '0,200,122';
+      el.setAttribute('x1', p.a.sx); el.setAttribute('y1', p.a.sy);
+      el.setAttribute('x2', p.b.sx); el.setAttribute('y2', p.b.sy);
+      el.style.stroke      = 'rgba('+col+','+alpha+')';
+      el.style.strokeWidth = w;
+      if(front){
+        el.setAttribute('filter','url(#dnaGlowSoft)');
+      } else {
+        el.removeAttribute('filter');
+      }
+    });
+
+    // Actualizar segmentos de hebra A y B
+    for(var i=0; i<STEPS-1; i++){
+      var pa = pts[i], pb = pts[i+1];
+
+      var avgZA = (pa.a.sz + pb.a.sz) / 2;
+      var fA = avgZA > 30, mA = avgZA > -30;
+      var alphaA = fA ? 0.85 : mA ? 0.5 : 0.18;
+      var wA     = fA ? 3.5  : mA ? 2.2 : 1.2;
+      segAEls[i].setAttribute('x1', pa.a.sx); segAEls[i].setAttribute('y1', pa.a.sy);
+      segAEls[i].setAttribute('x2', pb.a.sx); segAEls[i].setAttribute('y2', pb.a.sy);
+      segAEls[i].style.stroke      = 'rgba(168,85,247,'+alphaA+')';
+      segAEls[i].style.strokeWidth = wA;
+
+      var avgZB = (pa.b.sz + pb.b.sz) / 2;
+      var fB = avgZB > 30, mB = avgZB > -30;
+      var alphaB = fB ? 0.85 : mB ? 0.5 : 0.18;
+      var wB     = fB ? 3.5  : mB ? 2.2 : 1.2;
+      segBEls[i].setAttribute('x1', pa.b.sx); segBEls[i].setAttribute('y1', pa.b.sy);
+      segBEls[i].setAttribute('x2', pb.b.sx); segBEls[i].setAttribute('y2', pb.b.sy);
+      segBEls[i].style.stroke      = 'rgba(0,200,255,'+alphaB+')';
+      segBEls[i].style.strokeWidth = wB;
+    }
+
+    // Actualizar nodos
+    pts.forEach(function(p, i){
+      var rA = NODE_R * p.a.s * 1.6;
+      var fA = p.a.sz > 30, mA = p.a.sz > -30;
+      nodeAEls[i].setAttribute('cx', p.a.sx);
+      nodeAEls[i].setAttribute('cy', p.a.sy);
+      nodeAEls[i].setAttribute('r',  Math.max(rA, 2));
+      nodeAEls[i].setAttribute('fill', colA);
+      nodeAEls[i].style.opacity = fA ? '1' : mA ? '0.6' : '0.2';
+
+      var rB = NODE_R * p.b.s * 1.6;
+      var fB = p.b.sz > 30, mB = p.b.sz > -30;
+      nodeBEls[i].setAttribute('cx', p.b.sx);
+      nodeBEls[i].setAttribute('cy', p.b.sy);
+      nodeBEls[i].setAttribute('r',  Math.max(rB, 2));
+      nodeBEls[i].setAttribute('fill', colB);
+      nodeBEls[i].style.opacity = fB ? '1' : mB ? '0.6' : '0.2';
+    });
+
+    requestAnimationFrame(render);
+  }
+  render();
+})();
+</script>
+
+<!-- CANVAS: RED NEURONAL / MOLÉCULAS -->
+<script>
+(function(){
+  var canvas = document.getElementById('hero-canvas');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  if(!ctx) return;
+
+  /* ── Config ───────────────────────────────────────────── */
+  var CFG = {
+    count:        90,      // nodos
+    maxDist:      145,     // distancia máxima para trazar enlace
+    nodeR:        2.2,     // radio base del nodo
+    pulseR:       5,       // radio del pulso
+    speed:        0.38,    // velocidad de movimiento
+    connectAlpha: 0.18,    // opacidad máxima del enlace
+    pulseSpeed:   0.012,   // velocidad del pulso viajando por el enlace
+    pulseChance:  0.0008,  // probabilidad por frame de lanzar un pulso
+    colors: {
+      node:  '168,85,247',
+      nodeCyan: '0,200,255',
+      nodeGreen:'0,200,122',
+      link:  '168,85,247',
+      pulse: '0,200,255',
+    }
+  };
+
+  /* ── Estado ───────────────────────────────────────────── */
+  var W=0, H=0;
+  var nodes   = [];
+  var pulses  = [];
+  var rafId   = null;
+  var running = false;
+
+  /* ── Resize robusto ───────────────────────────────────── */
+  function resize(){
+    var hero = document.getElementById('hero');
+    var rect = hero ? hero.getBoundingClientRect() : null;
+    W = rect ? rect.width  : window.innerWidth;
+    H = rect ? rect.height : window.innerHeight;
+    if(H < 100) H = window.innerHeight; // fallback si layout no está listo
+    var dpr = window.devicePixelRatio || 1;
+    canvas.width  = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    nodes.forEach(function(n){
+      if(n.x > W) n.x = Math.random() * W;
+      if(n.y > H) n.y = Math.random() * H;
+    });
+  }
+
+  /* ── Inicializar nodos ────────────────────────────────── */
+  function initNodes(){
+    var palette = [CFG.colors.node, CFG.colors.nodeCyan, CFG.colors.nodeGreen];
+    nodes = [];
+    for(var i=0; i<CFG.count; i++){
+      var col = palette[Math.floor(Math.random()*3)];
+      nodes.push({
+        x:  Math.random() * (W||window.innerWidth),
+        y:  Math.random() * (H||window.innerHeight),
+        vx: (Math.random()-0.5) * CFG.speed * 2,
+        vy: (Math.random()-0.5) * CFG.speed * 2,
+        r:  CFG.nodeR * (0.7 + Math.random()*0.8),
+        col: col,
+        // aminoácido label (opcional, se muestra en nodos grandes)
+        label: ['G','A','V','L','I','P','F','W','M','S','T','C','Y','H','K','R'][i%16],
+      });
+    }
+  }
+
+  /* ── Lanzar pulso por un enlace ──────────────────────── */
+  function maybePulse(){
+    if(Math.random() > CFG.pulseChance * nodes.length) return;
+    // elegir dos nodos cercanos al azar
+    var ai = Math.floor(Math.random()*nodes.length);
+    var a  = nodes[ai];
+    var best = null, bestD = CFG.maxDist;
+    nodes.forEach(function(b,bi){
+      if(bi===ai) return;
+      var d = Math.hypot(b.x-a.x, b.y-a.y);
+      if(d < bestD){ bestD=d; best=b; }
+    });
+    if(best) pulses.push({a:a, b:best, t:0});
+  }
+
+  /* ── Frame ───────────────────────────────────────────── */
+  function frame(){
+    if(!running) return;
+    ctx.clearRect(0, 0, W, H);
+
+    /* mover nodos */
+    nodes.forEach(function(n){
+      n.x += n.vx;
+      n.y += n.vy;
+      // rebotar en bordes suavemente
+      if(n.x < 0)  { n.x = 0;  n.vx *= -1; }
+      if(n.x > W)  { n.x = W;  n.vx *= -1; }
+      if(n.y < 0)  { n.y = 0;  n.vy *= -1; }
+      if(n.y > H)  { n.y = H;  n.vy *= -1; }
+    });
+
+    /* dibujar enlaces */
+    for(var i=0; i<nodes.length; i++){
+      for(var j=i+1; j<nodes.length; j++){
+        var a = nodes[i], b = nodes[j];
+        var dx = b.x-a.x, dy = b.y-a.y;
+        var dist = Math.sqrt(dx*dx+dy*dy);
+        if(dist < CFG.maxDist){
+          var alpha = CFG.connectAlpha * (1 - dist/CFG.maxDist);
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = 'rgba('+CFG.colors.link+','+alpha+')';
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+      }
+    }
+
+    /* dibujar pulsos */
+    maybePulse();
+    pulses = pulses.filter(function(p){
+      p.t += CFG.pulseSpeed;
+      if(p.t >= 1) return false;
+      var px = p.a.x + (p.b.x - p.a.x) * p.t;
+      var py = p.a.y + (p.b.y - p.a.y) * p.t;
+      var grd = ctx.createRadialGradient(px,py,0, px,py, CFG.pulseR*2);
+      grd.addColorStop(0,   'rgba('+CFG.colors.pulse+',0.9)');
+      grd.addColorStop(0.4, 'rgba('+CFG.colors.pulse+',0.35)');
+      grd.addColorStop(1,   'rgba('+CFG.colors.pulse+',0)');
+      ctx.beginPath();
+      ctx.arc(px, py, CFG.pulseR*2, 0, Math.PI*2);
+      ctx.fillStyle = grd;
+      ctx.fill();
+      return true;
+    });
+
+    /* dibujar nodos */
+    nodes.forEach(function(n){
+      // halo exterior
+      var halo = ctx.createRadialGradient(n.x,n.y,0, n.x,n.y, n.r*4);
+      halo.addColorStop(0,   'rgba('+n.col+',0.18)');
+      halo.addColorStop(1,   'rgba('+n.col+',0)');
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r*4, 0, Math.PI*2);
+      ctx.fillStyle = halo;
+      ctx.fill();
+      // núcleo
+      var grad = ctx.createRadialGradient(n.x-n.r*.3, n.y-n.r*.3, 0, n.x, n.y, n.r*1.2);
+      grad.addColorStop(0,   'rgba('+n.col+',0.95)');
+      grad.addColorStop(1,   'rgba('+n.col+',0.4)');
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+    });
+
+    rafId = requestAnimationFrame(frame);
+  }
+
+  /* ── Visibilidad: pausar si hero no está en viewport ─── */
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        if(!running){ running=true; rafId=requestAnimationFrame(frame); }
+      } else {
+        running = false;
+        if(rafId){ cancelAnimationFrame(rafId); rafId=null; }
+      }
+    });
+  }, {threshold: 0.01});
+  observer.observe(canvas);
+
+  /* ── Resize con debounce ─────────────────────────────── */
+  var resizeTimer;
+  window.addEventListener('resize', function(){
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 120);
+  });
+
+  /* ── Boot: esperar a que el layout esté listo ─────────── */
+  function boot(){
+    resize();
+    initNodes();
+    running = true;
+    rafId = requestAnimationFrame(frame);
+    setTimeout(function(){ canvas.classList.add('ready'); }, 150);
+  }
+  if(document.readyState === 'complete'){
+    boot();
+  } else {
+    window.addEventListener('load', boot);
+  }
+
+})();
 </script>
 </body>
 </html>
